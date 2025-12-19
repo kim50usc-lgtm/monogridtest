@@ -1,1 +1,2515 @@
-https://monogridtest.vercel.app/
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>monogrid</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: #fafafa;
+            --bg-secondary: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            --border: #e5e5e5;
+            --accent: #000000;
+            --sidebar-width: 240px;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* PASSWORD SCREEN */
+        #password-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--bg-primary);
+        }
+
+        .password-container {
+            text-align: center;
+            max-width: 400px;
+            padding: 48px;
+        }
+
+        .password-title {
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 48px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .password-title img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .password-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 16px 0;
+            font-size: 15px;
+            font-weight: 300;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-primary);
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-bottom-color: var(--accent);
+        }
+
+        .password-button {
+            padding: 16px;
+            font-size: 12px;
+            font-weight: 400;
+            background: var(--accent);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: opacity 0.2s;
+            margin-top: 8px;
+        }
+
+        .password-button:hover {
+            opacity: 0.8;
+        }
+
+        .password-error {
+            color: #d32f2f;
+            font-size: 13px;
+            font-weight: 300;
+            margin-top: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .password-error.show {
+            opacity: 1;
+        }
+
+        /* MAIN APP */
+        #app {
+            display: none;
+        }
+
+        #app.authenticated {
+            display: block;
+        }
+        
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+        
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 400;
+            margin-bottom: 2.5rem;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+        
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 200;
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 0;
+        }
+        
+        .mobile-menu-toggle span {
+            width: 20px;
+            height: 2px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        
+        .mobile-menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .mobile-menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        .logout-btn {
+            margin-top: 2rem;
+            padding: 0.5rem 0;
+            font-size: 0.7rem;
+            font-weight: 400;
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            border-top: 1px solid var(--border);
+            cursor: pointer;
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color 0.2s;
+            width: 100%;
+            text-align: left;
+            padding-top: 1rem;
+        }
+
+        .logout-btn:hover {
+            color: var(--text-primary);
+        }
+        
+        /* TYPE TOGGLE */
+        .type-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .type-btn {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 400;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
+        }
+
+        .type-btn:hover {
+            background: var(--bg-primary);
+        }
+
+        .type-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        
+        /* Search */
+        .search-box {
+            margin-bottom: 2rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.6rem 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            transition: border-color 0.2s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-bottom-color: var(--accent);
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        /* Filter sections */
+        .filter-section {
+            margin-bottom: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .filter-section:first-child {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .filter-section.hidden {
+            display: none;
+        }
+        
+        .filter-title {
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .filter-item input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+        
+        .filter-label {
+            font-size: 0.85rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .filter-item:hover .filter-label {
+            color: var(--text-primary);
+        }
+        
+        /* SORT DROPDOWN */
+        .sort-dropdown {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            background: transparent;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .sort-dropdown:hover {
+            border-color: #999999;
+        }
+        
+        .sort-dropdown:focus {
+            outline: none;
+            border-color: #1a1a1a;
+        }
+        
+        /* PRICE SLIDER */
+        .price-slider-container {
+            padding: 0.5rem 0;
+        }
+
+        .price-values {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        .price-slider {
+            position: relative;
+            height: 4px;
+            margin: 1rem 0;
+        }
+
+        .price-track {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        .price-range {
+            position: absolute;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .price-slider input[type="range"] {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            pointer-events: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .price-slider input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            pointer-events: all;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .price-slider input[type="range"]::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            pointer-events: all;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 0;
+            background: #f5f5f5;
+        }
+        
+        .products-grid {
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 0;
+            width: 100%;
+            /* Scroll performance optimizations */
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* PRODUCT CARD */
+        .product-card {
+            cursor: pointer;
+            transition: background-color 0.2s;
+            position: relative;
+            border-left: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+            background: #f5f5f5;
+            overflow: hidden;
+        }
+        
+        .product-card.animating {
+            cursor: wait;
+            pointer-events: none;
+        }
+        
+        .product-card:nth-child(-n+4) {
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .product-card:hover:not(.expanded):not(.animating) {
+            background-color: #ebebeb;
+        }
+        
+        .product-card.expanded {
+            z-index: 100;
+            background: white;
+        }
+        
+        
+        /* Expanded Card Content */
+        .card-specs-detail {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            opacity: 0;
+            transition: opacity 0.2s ease 0.05s;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+        }
+        
+        .product-card.expanded .card-specs-detail {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .product-card.expanded .product-image-container {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .specs-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 1rem 1rem 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            background: white;
+            flex-shrink: 0;
+        }
+        
+        .specs-detail-title {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .specs-detail-brand {
+            font-size: 0.65rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #666666;
+            margin-bottom: 0.25rem;
+        }
+        
+        .specs-detail-model {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+            line-height: 1.2;
+        }
+        
+        .specs-detail-quick {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            color: #666666;
+            line-height: 1.3;
+        }
+        
+        .specs-close-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #666;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            margin-left: 0.5rem;
+        }
+        
+        .specs-close-btn:hover {
+            background: #e0e0e0;
+            color: #1a1a1a;
+        }
+        
+        .specs-detail-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding: 0 1rem 1rem 1rem;
+            overflow-y: auto;
+            overflow-x: hidden;
+            flex: 1;
+        }
+        }
+        
+        .spec-group {
+            background: #f9f9f9;
+            padding: 0.75rem;
+            border-radius: 4px;
+        }
+        
+        .spec-group-title {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #999;
+            margin-bottom: 0.6rem;
+        }
+        
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.5rem;
+            padding: 0.35rem 0;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+        
+        .spec-label {
+            font-size: 0.7rem;
+            color: #666;
+            font-weight: 400;
+            flex-shrink: 0;
+        }
+        
+        .spec-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            color: #1a1a1a;
+            font-weight: 500;
+            text-align: right;
+            word-break: break-word;
+        }
+        
+        .product-image-container {
+            width: 100%;
+            padding-bottom: 100%;
+            position: relative;
+        }
+        
+        .product-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+            object-position: center;
+        }
+        
+        .product-brand {
+            position: absolute;
+            top: 0.75rem;
+            left: 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #666666;
+        }
+        
+        .product-tag {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.3rem 0.6rem;
+            border-radius: 2px;
+        }
+        
+        .product-tag.new {
+            background: transparent;
+            color: #000000;
+            font-size: 1rem;
+            padding: 0.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .product-tag.new::before {
+            content: '✦';
+            font-size: 1rem;
+            line-height: 1;
+        }
+        
+        .product-tag.discontinued {
+            width: 10px;
+            height: 10px;
+            background: #dc2626;
+            border-radius: 50%;
+            padding: 0;
+            font-size: 0;
+        }
+        
+        .product-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 0.75rem;
+        }
+        
+        .product-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.35rem;
+        }
+        
+        .product-name {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: #1a1a1a;
+            line-height: 1.3;
+            flex: 1;
+        }
+        
+        .product-specs {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 300;
+            color: #666666;
+            line-height: 1.5;
+        }
+        
+        .product-price {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            line-height: 1.3;
+            margin-left: 0.5rem;
+            white-space: nowrap;
+        }
+        
+        /* LOADING STATE */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 0.875rem;
+            font-weight: 300;
+            color: var(--text-muted);
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 1400px) {
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .product-card:nth-child(-n+4) {
+                border-top: none;
+            }
+            
+            .product-card:nth-child(-n+3) {
+                border-top: 1px solid #e0e0e0;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            :root {
+                --sidebar-width: 200px;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .product-card:nth-child(-n+3) {
+                border-top: none;
+            }
+            
+            .product-card:nth-child(-n+2) {
+                border-top: 1px solid #e0e0e0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            /* Show hamburger menu on mobile */
+            .mobile-menu-toggle {
+                display: flex;
+            }
+            
+            /* Sidebar becomes collapsible overlay on mobile */
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                width: 280px;
+                height: 100vh;
+                border-right: 1px solid var(--border);
+                border-bottom: none;
+                padding: 1rem;
+                max-height: 100vh;
+                overflow-y: auto;
+                transition: left 0.3s ease;
+                z-index: 150;
+                background: var(--bg-secondary);
+            }
+            
+            .sidebar.open {
+                left: 0;
+            }
+            
+            /* Overlay backdrop when sidebar is open */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 140;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            
+            .sidebar-overlay.active {
+                display: block;
+                opacity: 1;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding-top: 60px; /* Space for menu button */
+            }
+            
+            /* TWO columns on mobile portrait */
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .product-card:nth-child(-n+2) {
+                border-top: 1px solid #e0e0e0;
+            }
+            
+            /* Make logo smaller on mobile */
+            .logo {
+                font-size: 1.1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .logo img {
+                width: 20px;
+                height: 20px;
+            }
+            
+            /* Compact filter sections on mobile */
+            .filter-section {
+                margin-bottom: 1.5rem;
+                padding-top: 1.5rem;
+            }
+            
+            .filter-title {
+                font-size: 0.65rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .filter-group {
+                gap: 0.5rem;
+            }
+            
+            .filter-label {
+                font-size: 0.75rem;
+            }
+            
+            /* Mobile-friendly sort dropdown */
+            .sort-dropdown {
+                font-size: 0.7rem;
+                padding: 0.4rem 0.6rem;
+            }
+            
+            /* Smaller product card elements for 2-column layout */
+            .product-brand {
+                font-size: 0.6rem;
+                top: 0.5rem;
+                left: 0.5rem;
+            }
+            
+            .product-tag.new {
+                top: 0.5rem;
+                right: 0.5rem;
+                font-size: 0.75rem;
+            }
+            
+            .product-tag.new::before {
+                font-size: 0.75rem;
+            }
+            
+            .product-tag.discontinued {
+                top: 0.5rem;
+                right: 0.5rem;
+                width: 8px;
+                height: 8px;
+            }
+            
+            .product-info {
+                padding: 0.5rem;
+            }
+            
+            .product-name {
+                font-size: 0.7rem;
+            }
+            
+            .product-price {
+                font-size: 0.7rem;
+            }
+            
+            .product-specs {
+                font-size: 0.6rem;
+            }
+            
+            /* Specs detail adjustments for mobile */
+            .specs-detail-header {
+                padding: 0.75rem;
+            }
+            
+            .specs-detail-brand {
+                font-size: 0.55rem;
+            }
+            
+            .specs-detail-model {
+                font-size: 0.85rem;
+            }
+            
+            .specs-detail-quick {
+                font-size: 0.55rem;
+            }
+            
+            .specs-detail-grid {
+                padding: 0 0.75rem 0.75rem 0.75rem;
+                gap: 0.5rem;
+            }
+            
+            .spec-group {
+                padding: 0.6rem;
+            }
+            
+            .spec-group-title {
+                font-size: 0.55rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .spec-label, .spec-value {
+                font-size: 0.6rem;
+            }
+            
+            .spec-item {
+                padding: 0.3rem 0;
+            }
+            
+            /* Bigger close button for touch */
+            .specs-close-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* Extra small phones - still 2 columns but more compact */
+        @media (max-width: 480px) {
+            /* Collapsible sidebar for very small screens */
+            .sidebar {
+                padding: 0.75rem;
+                width: 260px;
+            }
+            
+            .logo {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .type-toggle {
+                flex-direction: row;
+                gap: 0.25rem;
+            }
+            
+            .type-btn {
+                font-size: 0.65rem;
+                padding: 0.4rem;
+            }
+            
+            /* Even smaller text for 2-column layout on tiny screens */
+            .product-brand {
+                font-size: 0.55rem;
+            }
+            
+            .product-name {
+                font-size: 0.65rem;
+            }
+            
+            .product-price {
+                font-size: 0.65rem;
+            }
+            
+            .product-specs {
+                font-size: 0.55rem;
+            }
+            
+            .product-tag.new::before {
+                font-size: 0.7rem;
+            }
+            
+            /* Adjust password screen for small phones */
+            .password-title {
+                font-size: 24px;
+                margin-bottom: 32px;
+            }
+            
+            .password-title img {
+                width: 24px;
+                height: 24px;
+            }
+            
+            .password-container {
+                padding: 32px 24px;
+            }
+        }
+        
+        /* Touch-friendly enhancements for all mobile */
+        @media (hover: none) and (pointer: coarse) {
+            /* Bigger tap targets */
+            .filter-item {
+                padding: 0.25rem 0;
+            }
+            
+            .filter-item input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+            }
+            
+            /* Remove hover effects on touch devices */
+            .product-card:hover:not(.expanded):not(.animating) {
+                background-color: #f5f5f5;
+            }
+            
+            /* Prevent text selection issues on mobile */
+            .product-card {
+                -webkit-tap-highlight-color: transparent;
+                -webkit-touch-callout: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Screen -->
+    <div id="password-screen">
+        <div class="password-container">
+            <h1 class="password-title">
+                <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1766101140/cc1325a0-c83b-454b-86d5-1dcec02d36e2_w2y9to.jpg" alt="monogrid logo">
+                monogrid
+            </h1>
+            <form class="password-form" id="password-form">
+                <input 
+                    type="password" 
+                    class="password-input" 
+                    id="password-input" 
+                    placeholder="password"
+                    autocomplete="off"
+                >
+                <button type="submit" class="password-button">Enter</button>
+                <div class="password-error" id="password-error">Incorrect password</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app">
+        <div class="app-container">
+            <!-- Mobile menu toggle -->
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <!-- Sidebar overlay for mobile -->
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
+            
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="logo">
+                    <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1766101140/cc1325a0-c83b-454b-86d5-1dcec02d36e2_w2y9to.jpg" alt="monogrid logo">
+                    monogrid
+                </div>
+                
+                <!-- Type Toggle -->
+                <div class="type-toggle">
+                    <button class="type-btn active" id="body-btn" data-type="body">Body</button>
+                    <button class="type-btn" id="lens-btn" data-type="lens">Lens</button>
+                </div>
+                
+                <!-- Search -->
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="search-input" 
+                        placeholder="Search..."
+                    >
+                </div>
+                
+                <!-- Camera Body Filters -->
+                <div id="body-filters">
+                    <div class="filter-section">
+                        <div class="filter-title">Sort</div>
+                        <select id="sort-select" class="sort-dropdown">
+                            <option value="release-desc">Newest First</option>
+                            <option value="release-asc">Oldest First</option>
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                            <option value="size-asc">Size: Smallest First</option>
+                            <option value="size-desc">Size: Largest First</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-title">Brand</div>
+                        <div class="filter-group" id="brand-filters"></div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-title">Sensor</div>
+                        <div class="filter-group" id="sensor-filters"></div>
+                    </div>
+
+                    <div class="filter-section">
+                        <div class="filter-title">IBIS</div>
+                        <div class="filter-group" id="ibis-filters">
+                            <div class="filter-item">
+                                <input type="checkbox" id="ibis-yes" value="true" data-filter="ibis">
+                                <label for="ibis-yes" class="filter-label">Yes</label>
+                            </div>
+                            <div class="filter-item">
+                                <input type="checkbox" id="ibis-no" value="false" data-filter="ibis">
+                                <label for="ibis-no" class="filter-label">No</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <div class="filter-title">Price Range</div>
+                        <div class="price-slider-container">
+                            <div class="price-values">
+                                <span id="price-min-value">$0</span>
+                                <span id="price-max-value">$10,000</span>
+                            </div>
+                            <div class="price-slider">
+                                <div class="price-track"></div>
+                                <div class="price-range" id="price-range"></div>
+                                <input type="range" id="price-min" min="0" max="10000" value="0" step="100">
+                                <input type="range" id="price-max" min="0" max="10000" value="10000" step="100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lens Filters (hidden by default) -->
+                <div id="lens-filters" style="display: none;">
+                    <div class="filter-section">
+                        <div class="filter-title">Sort</div>
+                        <select id="lens-sort-select" class="sort-dropdown">
+                            <option value="release-desc">Newest First</option>
+                            <option value="release-asc">Oldest First</option>
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                            <option value="focal-asc">Focal Length: Short to Long</option>
+                            <option value="focal-desc">Focal Length: Long to Short</option>
+                            <option value="aperture-asc">Aperture: Wide to Narrow</option>
+                            <option value="aperture-desc">Aperture: Narrow to Wide</option>
+                        </select>
+                    </div>
+                
+                    <div class="filter-section">
+                        <div class="filter-title">Brand</div>
+                        <div class="filter-group" id="lens-brand-filters"></div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-title">Mount</div>
+                        <div class="filter-group" id="lens-mount-filters"></div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-title">Weather Seal</div>
+                        <div class="filter-group" id="lens-weather-filters">
+                            <div class="filter-item">
+                                <input type="checkbox" id="weather-yes" value="true" data-filter="weather">
+                                <label for="weather-yes" class="filter-label">Yes</label>
+                            </div>
+                            <div class="filter-item">
+                                <input type="checkbox" id="weather-no" value="false" data-filter="weather">
+                                <label for="weather-no" class="filter-label">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-title">Image Stabilization</div>
+                        <div class="filter-group" id="lens-is-filters">
+                            <div class="filter-item">
+                                <input type="checkbox" id="is-yes" value="true" data-filter="is">
+                                <label for="is-yes" class="filter-label">Yes</label>
+                            </div>
+                            <div class="filter-item">
+                                <input type="checkbox" id="is-no" value="false" data-filter="is">
+                                <label for="is-no" class="filter-label">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <div class="filter-title">Focal Length Range</div>
+                        <div class="price-slider-container">
+                            <div class="price-values">
+                                <span id="focal-min-value">14mm</span>
+                                <span id="focal-max-value">600mm</span>
+                            </div>
+                            <div class="price-slider">
+                                <div class="price-track"></div>
+                                <div class="price-range" id="focal-range"></div>
+                                <input type="range" id="focal-min" min="14" max="600" value="14" step="1">
+                                <input type="range" id="focal-max" min="14" max="600" value="600" step="1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logout -->
+                <button class="logout-btn" id="logout-btn">Logout</button>
+            </aside>
+            
+            <!-- Main Content -->
+            <main class="main-content">
+                <div class="loading" id="loading">Loading...</div>
+                <div class="products-grid" id="products-grid"></div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Supabase configuration - MUST BE INITIALIZED FIRST
+            const supabaseUrl = 'https://xxjckabamseimoketxnv.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4amNrYWJhbXNlaW1va2V0eG52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1NzU2MTEsImV4cCI6MjA4MTE1MTYxMX0.4gKMa9sE0q0DYGJughxBEWjZLN3C9MIfMolQtgJy7R4';
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+            let allCameras = [];
+            let allLenses = [];
+            let brandsMap = {}; // Store brand lookup
+            let currentType = 'body';
+            let filters = {
+                search: '',
+                brands: new Set(),
+                sensors: new Set(),
+                lensTypes: new Set(),
+                mounts: new Set(),
+                weather: new Set(),
+                is: new Set(),
+                ibis: new Set(),
+                priceMin: 0,
+                priceMax: 10000,
+                focalMin: 14,
+                focalMax: 600,
+                sortBy: 'release-desc' // Default: newest first
+            };
+
+            // PASSWORD PROTECTION
+            const CORRECT_PASSWORD = 'testml';
+            const PASSWORD_KEY = 'monogrid_auth';
+            const AUTH_TIME_KEY = 'monogrid_auth_time';
+            const SESSION_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
+
+            // Check if already authenticated and session is valid
+            function checkAuth() {
+                const isAuth = sessionStorage.getItem(PASSWORD_KEY) === 'true';
+                const authTime = sessionStorage.getItem(AUTH_TIME_KEY);
+                
+                if (isAuth && authTime) {
+                    const elapsed = Date.now() - parseInt(authTime);
+                    if (elapsed < SESSION_DURATION) {
+                        // Session still valid, refresh timestamp
+                        sessionStorage.setItem(AUTH_TIME_KEY, Date.now().toString());
+                        return true;
+                    }
+                }
+                
+                // Session expired or not authenticated
+                sessionStorage.removeItem(PASSWORD_KEY);
+                sessionStorage.removeItem(AUTH_TIME_KEY);
+                return false;
+            }
+
+            if (checkAuth()) {
+                document.getElementById('password-screen').style.display = 'none';
+                document.getElementById('app').classList.add('authenticated');
+                initApp();
+            } else {
+                // Auto-focus password input
+                document.getElementById('password-input').focus();
+            }
+
+            // Password form
+            document.getElementById('password-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const password = document.getElementById('password-input').value;
+                
+                console.log('Password submitted');
+                
+                if (password === CORRECT_PASSWORD) {
+                    console.log('Password correct, authenticating...');
+                    sessionStorage.setItem(PASSWORD_KEY, 'true');
+                    sessionStorage.setItem(AUTH_TIME_KEY, Date.now().toString());
+                    document.getElementById('password-screen').style.display = 'none';
+                    document.getElementById('app').classList.add('authenticated');
+                    console.log('Calling initApp()...');
+                    initApp();
+                } else {
+                    console.log('Password incorrect');
+                    document.getElementById('password-error').classList.add('show');
+                    document.getElementById('password-input').value = '';
+                    document.getElementById('password-input').focus();
+                    setTimeout(() => {
+                        document.getElementById('password-error').classList.remove('show');
+                    }, 3000);
+                }
+            });
+
+            // Logout
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                sessionStorage.removeItem(PASSWORD_KEY);
+                sessionStorage.removeItem(AUTH_TIME_KEY);
+                location.reload();
+            });
+
+        async function initApp() {
+            await loadData();
+            setupTypeToggle();
+            setupFilters();
+            renderProducts();
+            setupClickHandlers(); // Set up event delegation after first render
+            setupMobileMenu(); // Set up mobile sidebar toggle
+        }
+        
+        // Mobile menu toggle functionality
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            if (!menuToggle || !sidebar || !overlay) return;
+            
+            // Toggle sidebar
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            });
+            
+            // Close sidebar when clicking overlay
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                menuToggle.classList.remove('active');
+            });
+            
+            // Close sidebar when selecting a filter (optional, for better UX)
+            sidebar.addEventListener('click', (e) => {
+                // Close after clicking type toggle buttons
+                if (e.target.classList.contains('type-btn')) {
+                    setTimeout(() => {
+                        sidebar.classList.remove('open');
+                        overlay.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                    }, 300);
+                }
+            });
+        }
+
+        async function loadData() {
+            try {
+                console.log('Loading data from Supabase...');
+                
+                // Verify Supabase client is ready
+                if (!supabase) {
+                    throw new Error('Supabase client not initialized');
+                }
+                
+                // First, load all brands
+                const { data: brandsData, error: brandsError } = await supabase
+                    .from('brands')
+                    .select('*');
+
+                if (brandsError) {
+                    console.error('Error loading brands:', brandsError);
+                    document.getElementById('loading').textContent = `Error loading brands: ${brandsError.message}`;
+                    return;
+                }
+
+                // Create a lookup map: brand_id -> name
+                brandsMap = {};
+                (brandsData || []).forEach(brand => {
+                    brandsMap[brand.id] = brand.name;
+                });
+                console.log(`✓ Loaded ${Object.keys(brandsMap).length} brands`);
+                
+                // Load camera bodies
+                const { data: bodies, error: bodiesError } = await supabase
+                    .from('camera_bodies')
+                    .select('*')
+                    .order('model_name', { ascending: true });
+
+                if (bodiesError) {
+                    console.error('Error loading bodies:', bodiesError);
+                    document.getElementById('loading').textContent = `Error loading cameras: ${bodiesError.message}`;
+                    return;
+                }
+
+                // Add brand name to each camera body
+                allCameras = (bodies || []).map(body => ({
+                    ...body,
+                    brand: brandsMap[body.brand_id] || 'Unknown'
+                }));
+                
+                console.log(`✓ Loaded ${allCameras.length} camera bodies`);
+                
+                // Load lenses (they might not exist yet)
+                const { data: lenses, error: lensesError } = await supabase
+                    .from('lenses')
+                    .select('*')
+                    .order('model_name', { ascending: true });
+
+                if (!lensesError && lenses) {
+                    // Lenses already have brand as a direct column, no mapping needed
+                    allLenses = lenses || [];
+                    console.log(`✓ Loaded ${allLenses.length} lenses`);
+                } else {
+                    console.log('No lenses table found or empty');
+                    allLenses = [];
+                }
+                
+                document.getElementById('loading').style.display = 'none';
+                console.log('✓ Data loading complete');
+                
+            } catch (error) {
+                console.error('Fatal error loading data:', error);
+                document.getElementById('loading').textContent = `Error: ${error.message}. Please refresh the page.`;
+            }
+        }
+
+        function setupTypeToggle() {
+            const bodyBtn = document.getElementById('body-btn');
+            const lensBtn = document.getElementById('lens-btn');
+            const bodyFilters = document.getElementById('body-filters');
+            const lensFilters = document.getElementById('lens-filters');
+
+            bodyBtn.addEventListener('click', () => {
+                currentType = 'body';
+                bodyBtn.classList.add('active');
+                lensBtn.classList.remove('active');
+                bodyFilters.style.display = 'block';
+                lensFilters.style.display = 'none';
+                clearFilters();
+                renderProducts();
+            });
+
+            lensBtn.addEventListener('click', () => {
+                console.log('🔍 Lens button clicked');
+                console.log('  allLenses.length:', allLenses.length);
+                currentType = 'lens';
+                lensBtn.classList.add('active');
+                bodyBtn.classList.remove('active');
+                lensFilters.style.display = 'block';
+                bodyFilters.style.display = 'none';
+                clearFilters();
+                renderProducts();
+                console.log('  renderProducts() called for lenses');
+            });
+        }
+
+        function clearFilters() {
+            filters.search = '';
+            filters.brands.clear();
+            filters.sensors.clear();
+            filters.lensTypes.clear();
+            filters.mounts.clear();
+            filters.weather.clear();
+            filters.is.clear();
+            filters.ibis.clear();
+            filters.priceMin = 0;
+            filters.priceMax = 10000;
+            filters.focalMin = 14;
+            filters.focalMax = 600;
+            document.getElementById('search-input').value = '';
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            
+            // Reset price sliders
+            const priceMinSlider = document.getElementById('price-min');
+            const priceMaxSlider = document.getElementById('price-max');
+            if (priceMinSlider) priceMinSlider.value = 0;
+            if (priceMaxSlider) priceMaxSlider.value = 10000;
+            
+            // Reset focal length sliders
+            const focalMinSlider = document.getElementById('focal-min');
+            const focalMaxSlider = document.getElementById('focal-max');
+            if (focalMinSlider) focalMinSlider.value = 14;
+            if (focalMaxSlider) focalMaxSlider.value = 600;
+            
+            updatePriceDisplay();
+            updateFocalDisplay();
+        }
+
+        function setupFilters() {
+            // Camera body filters
+            const brands = [...new Set(allCameras.map(c => c.brand))].sort();
+            const sensors = [...new Set(allCameras.map(c => c.sensor_size).filter(Boolean))].sort();
+
+            // Brand filters
+            const brandFilters = document.getElementById('brand-filters');
+            brands.forEach(brand => {
+                const div = document.createElement('div');
+                div.className = 'filter-item';
+                div.innerHTML = `
+                    <input type="checkbox" id="brand-${brand}" value="${brand}" data-filter="brand">
+                    <label for="brand-${brand}" class="filter-label">${brand}</label>
+                `;
+                brandFilters.appendChild(div);
+            });
+
+            // Sensor filters
+            const sensorFilters = document.getElementById('sensor-filters');
+            sensors.forEach(sensor => {
+                const div = document.createElement('div');
+                div.className = 'filter-item';
+                div.innerHTML = `
+                    <input type="checkbox" id="sensor-${sensor}" value="${sensor}" data-filter="sensor">
+                    <label for="sensor-${sensor}" class="filter-label">${sensor}</label>
+                `;
+                sensorFilters.appendChild(div);
+            });
+
+            // Lens filters
+            const lensBrands = [...new Set(allLenses.map(l => l.brand))].sort();
+            const lensMounts = [...new Set(allLenses.map(l => l.mount).filter(Boolean))].sort();
+
+            // Lens brand filters
+            const lensBrandFilters = document.getElementById('lens-brand-filters');
+            lensBrands.forEach(brand => {
+                const div = document.createElement('div');
+                div.className = 'filter-item';
+                div.innerHTML = `
+                    <input type="checkbox" id="lens-brand-${brand}" value="${brand}" data-filter="brand">
+                    <label for="lens-brand-${brand}" class="filter-label">${brand}</label>
+                `;
+                lensBrandFilters.appendChild(div);
+            });
+
+            // Lens mount filters
+            const lensMountFilters = document.getElementById('lens-mount-filters');
+            lensMounts.forEach(mount => {
+                const div = document.createElement('div');
+                div.className = 'filter-item';
+                const mountId = mount.replace(/\s+/g, '-');
+                div.innerHTML = `
+                    <input type="checkbox" id="mount-${mountId}" value="${mount}" data-filter="mount">
+                    <label for="mount-${mountId}" class="filter-label">${mount}</label>
+                `;
+                lensMountFilters.appendChild(div);
+            });
+
+            // Search
+            document.getElementById('search-input').addEventListener('input', (e) => {
+                filters.search = e.target.value.toLowerCase();
+                renderProducts();
+            });
+
+            // Checkbox filters (including IBIS, weather, IS)
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const filterType = e.target.dataset.filter;
+                    const value = e.target.value;
+
+                    if (filterType === 'ibis' || filterType === 'weather' || filterType === 'is') {
+                        // Boolean filters
+                        if (e.target.checked) {
+                            filters[filterType].add(value);
+                        } else {
+                            filters[filterType].delete(value);
+                        }
+                    } else {
+                        // Set filters (brand, sensor, mount, etc.)
+                        if (e.target.checked) {
+                            filters[filterType + 's'].add(value);
+                        } else {
+                            filters[filterType + 's'].delete(value);
+                        }
+                    }
+                    
+                    // Update all filters dynamically
+                    updateAllFilters();
+
+                    renderProducts();
+                });
+            });
+
+            // Sort dropdown
+            const sortSelect = document.getElementById('sort-select');
+            if (sortSelect) {
+                sortSelect.addEventListener('change', (e) => {
+                    filters.sortBy = e.target.value;
+                    renderProducts();
+                });
+            }
+
+            // Lens sort dropdown
+            const lensSortSelect = document.getElementById('lens-sort-select');
+            if (lensSortSelect) {
+                lensSortSelect.addEventListener('change', (e) => {
+                    filters.sortBy = e.target.value;
+                    renderProducts();
+                });
+            }
+
+            // Price slider setup
+            setupPriceSlider();
+            
+            // Focal length slider setup
+            setupFocalSlider();
+        }
+        
+        function updateAllFilters() {
+            // Get currently filtered cameras based on active filters
+            const filteredCameras = getFilteredCamerasForOptions();
+            
+            // Update each filter type
+            updateFilterOptions('brand', filteredCameras);
+            updateFilterOptions('sensor', filteredCameras);
+        }
+        
+        function getFilteredCamerasForOptions() {
+            // Apply all current filters EXCEPT the ones we're about to update
+            // This allows bidirectional filtering
+            return allCameras.filter(camera => {
+                // Brand filter
+                if (filters.brands.size > 0 && !filters.brands.has(camera.brand)) {
+                    return false;
+                }
+                
+                // Sensor filter
+                if (filters.sensors.size > 0 && !filters.sensors.has(camera.sensor_size)) {
+                    return false;
+                }
+                
+                // IBIS filter
+                if (filters.ibis.size > 0) {
+                    const hasIbis = camera.has_ibis === true || camera.has_ibis === 'true';
+                    const wantsIbis = filters.ibis.has('true');
+                    const wantsNoIbis = filters.ibis.has('false');
+                    
+                    if (wantsIbis && !hasIbis) return false;
+                    if (wantsNoIbis && hasIbis) return false;
+                }
+                
+                // Price filter
+                const price = camera.msrp_usd || camera.current_price_usd;
+                if (price && (price < filters.priceMin || price > filters.priceMax)) {
+                    return false;
+                }
+                
+                return true;
+            });
+        }
+        
+        function updateFilterOptions(filterType, availableCameras) {
+            const containerMap = {
+                'brand': 'brand-filters',
+                'sensor': 'sensor-filters'
+            };
+            
+            const propertyMap = {
+                'brand': 'brand',
+                'sensor': 'sensor_size'
+            };
+            
+            const filterSetMap = {
+                'brand': 'brands',
+                'sensor': 'sensors'
+            };
+            
+            const containerId = containerMap[filterType];
+            const property = propertyMap[filterType];
+            const filterSetName = filterSetMap[filterType];
+            
+            if (!containerId) return;
+            
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            // Calculate what options should be available based on current filters
+            // For each option, check if ANY camera with that option matches OTHER filters
+            const allOptions = [...new Set(allCameras.map(c => c[property]).filter(Boolean))].sort();
+            
+            // For each option, determine if it should be available
+            const availableOptions = allOptions.filter(option => {
+                // Check if any camera exists that has this option AND matches all OTHER filters
+                return allCameras.some(camera => {
+                    if (camera[property] !== option) return false;
+                    
+                    // Check all other filters (not including current filter type)
+                    // Brand filter (skip if we're updating brand)
+                    if (filterType !== 'brand' && filters.brands.size > 0 && !filters.brands.has(camera.brand)) {
+                        return false;
+                    }
+                    
+                    // Sensor filter (skip if we're updating sensor)
+                    if (filterType !== 'sensor' && filters.sensors.size > 0 && !filters.sensors.has(camera.sensor_size)) {
+                        return false;
+                    }
+                    
+                    // IBIS filter
+                    if (filters.ibis.size > 0) {
+                        const hasIbis = camera.has_ibis === true || camera.has_ibis === 'true';
+                        const wantsIbis = filters.ibis.has('true');
+                        const wantsNoIbis = filters.ibis.has('false');
+                        
+                        if (wantsIbis && !hasIbis) return false;
+                        if (wantsNoIbis && hasIbis) return false;
+                    }
+                    
+                    // Price filter
+                    const price = camera.msrp_usd || camera.current_price_usd;
+                    if (price && (price < filters.priceMin || price > filters.priceMax)) {
+                        return false;
+                    }
+                    
+                    return true;
+                });
+            });
+            
+            // Clear and rebuild the filter options
+            container.innerHTML = '';
+            
+            availableOptions.forEach(option => {
+                const div = document.createElement('div');
+                div.className = 'filter-item';
+                
+                // Check if this option is currently selected
+                const isChecked = filters[filterSetName].has(option);
+                
+                const safeId = `${filterType}-${option.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '')}`;
+                
+                div.innerHTML = `
+                    <input type="checkbox" id="${safeId}" value="${option}" data-filter="${filterType}" ${isChecked ? 'checked' : ''}>
+                    <label for="${safeId}" class="filter-label">${option}</label>
+                `;
+                container.appendChild(div);
+                
+                // Add event listener
+                const checkbox = div.querySelector('input');
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        filters[filterSetName].add(option);
+                    } else {
+                        filters[filterSetName].delete(option);
+                    }
+                    updateAllFilters();
+                    renderProducts();
+                });
+            });
+            
+            // Clean up filter selections - remove any that are no longer available
+            const unavailableSelections = [...filters[filterSetName]].filter(s => !availableOptions.includes(s));
+            unavailableSelections.forEach(s => filters[filterSetName].delete(s));
+        }
+
+        function setupPriceSlider() {
+            const priceMinSlider = document.getElementById('price-min');
+            const priceMaxSlider = document.getElementById('price-max');
+            
+            if (!priceMinSlider || !priceMaxSlider) return;
+
+            // Find actual price range from data
+            const prices = allCameras
+                .map(c => c.price_usd)
+                .filter(p => p != null && p > 0);
+            
+            if (prices.length > 0) {
+                const minPrice = Math.floor(Math.min(...prices) / 100) * 100;
+                const maxPrice = Math.ceil(Math.max(...prices) / 100) * 100;
+                
+                priceMinSlider.min = minPrice;
+                priceMinSlider.max = maxPrice;
+                priceMinSlider.value = minPrice;
+                
+                priceMaxSlider.min = minPrice;
+                priceMaxSlider.max = maxPrice;
+                priceMaxSlider.value = maxPrice;
+                
+                filters.priceMin = minPrice;
+                filters.priceMax = maxPrice;
+            }
+
+            function updateSlider() {
+                let minVal = parseInt(priceMinSlider.value);
+                let maxVal = parseInt(priceMaxSlider.value);
+
+                // Prevent sliders from crossing
+                if (minVal > maxVal - 100) {
+                    if (this === priceMinSlider) {
+                        minVal = maxVal - 100;
+                        priceMinSlider.value = minVal;
+                    } else {
+                        maxVal = minVal + 100;
+                        priceMaxSlider.value = maxVal;
+                    }
+                }
+
+                filters.priceMin = minVal;
+                filters.priceMax = maxVal;
+
+                updatePriceDisplay();
+                renderProducts();
+            }
+
+            priceMinSlider.addEventListener('input', updateSlider);
+            priceMaxSlider.addEventListener('input', updateSlider);
+
+            updatePriceDisplay();
+        }
+
+        function updatePriceDisplay() {
+            const priceMinSlider = document.getElementById('price-min');
+            const priceMaxSlider = document.getElementById('price-max');
+            const priceRange = document.getElementById('price-range');
+            const priceMinValue = document.getElementById('price-min-value');
+            const priceMaxValue = document.getElementById('price-max-value');
+
+            if (!priceMinSlider || !priceMaxSlider) return;
+
+            const min = parseInt(priceMinSlider.value);
+            const max = parseInt(priceMaxSlider.value);
+            const rangeMin = parseInt(priceMinSlider.min);
+            const rangeMax = parseInt(priceMinSlider.max);
+
+            // Update display values
+            priceMinValue.textContent = `$${min.toLocaleString()}`;
+            priceMaxValue.textContent = `$${max.toLocaleString()}`;
+
+            // Update range bar position
+            const percentMin = ((min - rangeMin) / (rangeMax - rangeMin)) * 100;
+            const percentMax = ((max - rangeMin) / (rangeMax - rangeMin)) * 100;
+
+            priceRange.style.left = percentMin + '%';
+            priceRange.style.width = (percentMax - percentMin) + '%';
+        }
+
+        function setupFocalSlider() {
+            const focalMinSlider = document.getElementById('focal-min');
+            const focalMaxSlider = document.getElementById('focal-max');
+            
+            if (!focalMinSlider || !focalMaxSlider) return;
+
+            // Extract min and max focal lengths from all lenses
+            const focalLengths = allLenses
+                .map(l => {
+                    // Parse focal length string like "24-70mm" or "85mm"
+                    if (!l.focal_length) return null;
+                    const match = l.focal_length.match(/(\d+)(?:-(\d+))?/);
+                    if (!match) return null;
+                    return {
+                        min: parseInt(match[1]),
+                        max: match[2] ? parseInt(match[2]) : parseInt(match[1])
+                    };
+                })
+                .filter(f => f != null);
+            
+            if (focalLengths.length > 0) {
+                const minFocal = Math.min(...focalLengths.map(f => f.min));
+                const maxFocal = Math.max(...focalLengths.map(f => f.max));
+                
+                focalMinSlider.min = minFocal;
+                focalMinSlider.max = maxFocal;
+                focalMinSlider.value = minFocal;
+                
+                focalMaxSlider.min = minFocal;
+                focalMaxSlider.max = maxFocal;
+                focalMaxSlider.value = maxFocal;
+                
+                filters.focalMin = minFocal;
+                filters.focalMax = maxFocal;
+            }
+
+            function updateSlider() {
+                let minVal = parseInt(focalMinSlider.value);
+                let maxVal = parseInt(focalMaxSlider.value);
+
+                // Prevent sliders from crossing
+                if (minVal > maxVal - 5) {
+                    if (this === focalMinSlider) {
+                        minVal = maxVal - 5;
+                        focalMinSlider.value = minVal;
+                    } else {
+                        maxVal = minVal + 5;
+                        focalMaxSlider.value = maxVal;
+                    }
+                }
+
+                filters.focalMin = minVal;
+                filters.focalMax = maxVal;
+
+                updateFocalDisplay();
+                renderProducts();
+            }
+
+            focalMinSlider.addEventListener('input', updateSlider);
+            focalMaxSlider.addEventListener('input', updateSlider);
+
+            updateFocalDisplay();
+        }
+
+        function updateFocalDisplay() {
+            const focalMinSlider = document.getElementById('focal-min');
+            const focalMaxSlider = document.getElementById('focal-max');
+            const focalRange = document.getElementById('focal-range');
+            const focalMinValue = document.getElementById('focal-min-value');
+            const focalMaxValue = document.getElementById('focal-max-value');
+
+            if (!focalMinSlider || !focalMaxSlider) return;
+
+            const min = parseInt(focalMinSlider.value);
+            const max = parseInt(focalMaxSlider.value);
+            const rangeMin = parseInt(focalMinSlider.min);
+            const rangeMax = parseInt(focalMinSlider.max);
+
+            // Update display values
+            focalMinValue.textContent = `${min}mm`;
+            focalMaxValue.textContent = `${max}mm`;
+
+            // Update range bar position
+            const percentMin = ((min - rangeMin) / (rangeMax - rangeMin)) * 100;
+            const percentMax = ((max - rangeMin) / (rangeMax - rangeMin)) * 100;
+
+            focalRange.style.left = percentMin + '%';
+            focalRange.style.width = (percentMax - percentMin) + '%';
+        }
+
+        // Global scroll detection to prevent clicks during scroll
+        let isPageScrolling = false;
+        let scrollTimeout;
+        
+        window.addEventListener('scroll', function() {
+            isPageScrolling = true;
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(function() {
+                isPageScrolling = false;
+            }, 100);
+        }, { passive: true });
+
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            const items = currentType === 'body' ? allCameras : allLenses;
+            
+            console.log(`📊 renderProducts() called - Type: ${currentType}, Items: ${items.length}`);
+            
+            if (items.length === 0) {
+                grid.innerHTML = `<div class="loading">${currentType === 'body' ? 'No camera bodies in database' : 'No lenses in database yet'}</div>`;
+                console.log(`⚠️ No ${currentType}s to render`);
+                return;
+            }
+
+            // Filter items
+            let filtered = items.filter(item => {
+                // Search
+                if (filters.search) {
+                    const searchStr = `${item.brand} ${item.model_name}`.toLowerCase();
+                    if (!searchStr.includes(filters.search)) return false;
+                }
+
+                // Brand
+                if (filters.brands.size > 0 && !filters.brands.has(item.brand)) {
+                    return false;
+                }
+
+                // Sensor (body only)
+                if (currentType === 'body' && filters.sensors.size > 0 && !filters.sensors.has(item.sensor_size)) {
+                    return false;
+                }
+
+                // IBIS (body only)
+                if (currentType === 'body' && filters.ibis.size > 0) {
+                    const hasIbis = item.has_ibis === true;
+                    const wantsIbis = filters.ibis.has('true');
+                    const wantsNoIbis = filters.ibis.has('false');
+                    
+                    if (wantsIbis && !hasIbis) return false;
+                    if (wantsNoIbis && hasIbis) return false;
+                }
+
+                // Price (body only)
+                if (currentType === 'body' && item.price_usd != null) {
+                    if (item.price_usd < filters.priceMin || item.price_usd > filters.priceMax) {
+                        return false;
+                    }
+                }
+
+                // Lens-specific filters
+                if (currentType === 'lens') {
+                    // Mount filter
+                    if (filters.mounts.size > 0 && !filters.mounts.has(item.mount)) {
+                        return false;
+                    }
+
+                    // Weather sealing filter
+                    if (filters.weather.size > 0) {
+                        const hasWeather = item.weather_sealed === true;
+                        const wantsWeather = filters.weather.has('true');
+                        const wantsNoWeather = filters.weather.has('false');
+                        
+                        if (wantsWeather && !hasWeather) return false;
+                        if (wantsNoWeather && hasWeather) return false;
+                    }
+
+                    // Image stabilization filter
+                    if (filters.is.size > 0) {
+                        const hasIS = item.image_stabilization === true;
+                        const wantsIS = filters.is.has('true');
+                        const wantsNoIS = filters.is.has('false');
+                        
+                        if (wantsIS && !hasIS) return false;
+                        if (wantsNoIS && hasIS) return false;
+                    }
+
+                    // Focal length filter
+                    if (item.focal_length) {
+                        // Parse focal length string like "24-70mm" or "85mm"
+                        const match = item.focal_length.match(/(\d+)(?:-(\d+))?/);
+                        if (match) {
+                            const lensFocalMin = parseInt(match[1]);
+                            const lensFocalMax = match[2] ? parseInt(match[2]) : lensFocalMin;
+                            
+                            // Check if lens focal range overlaps with filter range
+                            if (lensFocalMax < filters.focalMin || lensFocalMin > filters.focalMax) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                return true;
+            });
+
+            console.log(`Rendering ${filtered.length} ${currentType}s`);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="loading">No items match your filters</div>';
+                return;
+            }
+            
+            // Sort items
+            filtered.sort((a, b) => {
+                switch(filters.sortBy) {
+                    case 'release-desc':
+                        // Newest first (default)
+                        return (b.release_year || 0) - (a.release_year || 0);
+                    
+                    case 'release-asc':
+                        // Oldest first
+                        return (a.release_year || 0) - (b.release_year || 0);
+                    
+                    case 'price-asc':
+                        // Price: Low to High
+                        const priceA = a.msrp_usd || a.current_price_usd || 0;
+                        const priceB = b.msrp_usd || b.current_price_usd || 0;
+                        return priceA - priceB;
+                    
+                    case 'price-desc':
+                        // Price: High to Low
+                        const priceA2 = a.msrp_usd || a.current_price_usd || 0;
+                        const priceB2 = b.msrp_usd || b.current_price_usd || 0;
+                        return priceB2 - priceA2;
+                    
+                    case 'size-asc':
+                        // Size: Smallest First (volume calculation for bodies, weight for lenses)
+                        if (currentType === 'body') {
+                            const volumeA = (a.width_mm || 0) * (a.height_mm || 0) * (a.depth_mm || 0);
+                            const volumeB = (b.width_mm || 0) * (b.height_mm || 0) * (b.depth_mm || 0);
+                            return volumeA - volumeB;
+                        } else {
+                            return (a.weight_g || 0) - (b.weight_g || 0);
+                        }
+                    
+                    case 'size-desc':
+                        // Size: Largest First (volume calculation for bodies, weight for lenses)
+                        if (currentType === 'body') {
+                            const volumeA2 = (a.width_mm || 0) * (a.height_mm || 0) * (a.depth_mm || 0);
+                            const volumeB2 = (b.width_mm || 0) * (b.height_mm || 0) * (b.depth_mm || 0);
+                            return volumeB2 - volumeA2;
+                        } else {
+                            return (b.weight_g || 0) - (a.weight_g || 0);
+                        }
+                    
+                    case 'focal-asc':
+                        // Focal Length: Short to Long (lens only)
+                        const focalA = parseFocalLength(a.focal_length);
+                        const focalB = parseFocalLength(b.focal_length);
+                        return focalA - focalB;
+                    
+                    case 'focal-desc':
+                        // Focal Length: Long to Short (lens only)
+                        const focalA2 = parseFocalLength(a.focal_length);
+                        const focalB2 = parseFocalLength(b.focal_length);
+                        return focalB2 - focalA2;
+                    
+                    case 'aperture-asc':
+                        // Aperture: Wide to Narrow (smaller f-number = wider, lens only)
+                        const apertureA = parseAperture(a.max_aperture);
+                        const apertureB = parseAperture(b.max_aperture);
+                        return apertureA - apertureB;
+                    
+                    case 'aperture-desc':
+                        // Aperture: Narrow to Wide (larger f-number = narrower, lens only)
+                        const apertureA2 = parseAperture(a.max_aperture);
+                        const apertureB2 = parseAperture(b.max_aperture);
+                        return apertureB2 - apertureA2;
+                    
+                    default:
+                        return 0;
+                }
+            });
+
+            // Helper function to parse focal length (use min value for zooms)
+            function parseFocalLength(focal) {
+                if (!focal) return 0;
+                const match = focal.match(/(\d+)/);
+                return match ? parseInt(match[1]) : 0;
+            }
+
+            // Helper function to parse aperture (extract f-number)
+            function parseAperture(aperture) {
+                if (!aperture) return 999;
+                const match = aperture.match(/[\d.]+/);
+                return match ? parseFloat(match[0]) : 999;
+            }
+
+
+            // Render
+            grid.innerHTML = filtered.map((item, i) => {
+                let specs = '';
+                let detailedSpecs = '';
+                
+                if (currentType === 'body') {
+                    // Camera body specs
+                    specs = [
+                        item.sensor_size,
+                        item.megapixels ? `${item.megapixels}MP` : null,
+                        item.has_ibis ? 'IBIS' : null
+                    ].filter(Boolean).join(' • ');
+                } else {
+                    // Lens specs - create tags for key features
+                    const lensSpecs = [];
+                    
+                    // Mount type
+                    if (item.mount) lensSpecs.push(item.mount);
+                    
+                    // Autofocus/Manual
+                    if (item.autofocus === true) lensSpecs.push('AF');
+                    else if (item.autofocus === false) lensSpecs.push('MF');
+                    
+                    // Weather sealing
+                    if (item.weather_sealed) lensSpecs.push('WR');
+                    
+                    // Image stabilization
+                    if (item.image_stabilization) lensSpecs.push('IS');
+                    
+                    // Macro capability
+                    if (item.is_macro) lensSpecs.push('Macro');
+                    
+                    // Filter diameter (⌀ symbol)
+                    if (item.filter_size_mm) lensSpecs.push(`⌀${item.filter_size_mm}mm`);
+                    
+                    specs = lensSpecs.join(' • ');
+                }
+
+                // Use a clean blank placeholder if no image URL exists
+                const placeholderUrl = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2ZmZmZmZiIvPjwvc3ZnPg==';
+                const imageUrl = item.image_url && item.image_url !== '' ? item.image_url : placeholderUrl;
+
+                // Determine product status
+                let statusTag = '';
+                
+                // NEW if released within last 12 months (1 year)
+                if (item.release_year && item.release_month && typeof item.release_month === 'string') {
+                    const now = new Date();
+                    const currentYear = now.getFullYear();
+                    const currentMonth = now.getMonth(); // 0-11
+                    
+                    const releaseYear = parseInt(item.release_year);
+                    
+                    // Parse month name to number (0-11)
+                    const monthNames = ['january', 'february', 'march', 'april', 'may', 'june', 
+                                       'july', 'august', 'september', 'october', 'november', 'december'];
+                    const releaseMonthStr = item.release_month.toLowerCase();
+                    const releaseMonth = monthNames.indexOf(releaseMonthStr);
+                    
+                    if (releaseMonth !== -1) {
+                        // Calculate months difference
+                        const monthsDiff = (currentYear - releaseYear) * 12 + (currentMonth - releaseMonth);
+                        
+                        // NEW if released within last 12 months
+                        if (monthsDiff >= 0 && monthsDiff <= 12) {
+                            statusTag = '<div class="product-tag new"></div>';
+                        }
+                    }
+                } else if (item.release_year) {
+                    // Fallback: If no month, use year only and check for current year
+                    const currentYear = new Date().getFullYear();
+                    const releaseYear = parseInt(item.release_year);
+                    
+                    if (currentYear === releaseYear) {
+                        statusTag = '<div class="product-tag new"></div>';
+                    }
+                }
+                
+                // DISCONTINUED only if explicitly marked in database
+                if (item.is_discontinued === true) {
+                    statusTag = '<div class="product-tag discontinued"></div>';
+                }
+
+                // Determine price to display (prefer MSRP, fallback to current price)
+                const displayPrice = item.msrp_usd || item.current_price_usd;
+                const priceHtml = displayPrice ? `<div class="product-price">$${displayPrice.toLocaleString()}</div>` : '';
+
+                // Build detailed specs HTML
+                if (currentType === 'body') {
+                    detailedSpecs = `
+                    <div class="specs-detail-header">
+                        <div class="specs-detail-title">
+                            <div class="specs-detail-brand">${item.brand}</div>
+                            <div class="specs-detail-model">${item.model_name}</div>
+                            <div class="specs-detail-quick">${specs}</div>
+                        </div>
+                        <button class="specs-close-btn" onclick="event.stopPropagation(); closeCardSpecs(this)">×</button>
+                    </div>
+                    <div class="specs-detail-grid">
+                        <div class="spec-group">
+                            <div class="spec-group-title">Sensor & Image</div>
+                            ${createSpecItem('Sensor Size', item.sensor_size)}
+                            ${createSpecItem('Sensor Type', item.sensor_type)}
+                            ${createSpecItem('Megapixels', item.megapixels ? `${item.megapixels} MP` : null)}
+                            ${createSpecItem('ISO Range', item.iso_range)}
+                        </div>
+                        
+                        <div class="spec-group">
+                            <div class="spec-group-title">Stabilization & Speed</div>
+                            ${createSpecItem('IBIS', item.has_ibis ? 'Yes' : 'No')}
+                            ${createSpecItem('IBIS Stops', item.ibis_stops ? `${item.ibis_stops} stops` : null)}
+                            ${createSpecItem('Continuous FPS', item.continuous_shooting_fps ? `${item.continuous_shooting_fps} fps` : null)}
+                            ${createSpecItem('Battery Life', item.battery_life_shots ? `${item.battery_life_shots} shots` : null)}
+                        </div>
+                        
+                        <div class="spec-group">
+                            <div class="spec-group-title">Video & Physical</div>
+                            ${createSpecItem('Max Video', item.video_max)}
+                            ${createSpecItem('Weight', item.weight_g ? `${item.weight_g}g` : null)}
+                            ${createSpecItem('Dimensions', item.width_mm && item.height_mm && item.depth_mm ? 
+                                `${item.width_mm} × ${item.height_mm} × ${item.depth_mm} mm` : null)}
+                        </div>
+                        
+                        <div class="spec-group">
+                            <div class="spec-group-title">Pricing & Release</div>
+                            ${createSpecItem('MSRP', item.msrp_usd ? `$${item.msrp_usd.toLocaleString()}` : null)}
+                            ${createSpecItem('Current Price', item.current_price_usd ? `$${item.current_price_usd.toLocaleString()}` : null)}
+                            ${createSpecItem('Released', item.release_month && item.release_year ? 
+                                `${item.release_month} ${item.release_year}` : item.release_year)}
+                        </div>
+                    </div>
+                    `;
+                } else {
+                    // Lens detailed specs
+                    detailedSpecs = `
+                        <div class="specs-detail-header">
+                            <div class="specs-detail-title">
+                                <div class="specs-detail-brand">${item.brand}</div>
+                                <div class="specs-detail-model">${item.model_name}</div>
+                                <div class="specs-detail-quick">${specs}</div>
+                            </div>
+                            <button class="specs-close-btn" onclick="event.stopPropagation(); closeCardSpecs(this)">×</button>
+                        </div>
+                        <div class="specs-detail-grid">
+                            <div class="spec-group">
+                                <div class="spec-group-title">Optical Specifications</div>
+                                ${createSpecItem('Lens Type', item.lens_type)}
+                                ${createSpecItem('Mount', item.mount)}
+                                ${createSpecItem('Focal Length', item.focal_length)}
+                                ${createSpecItem('Max Aperture', item.max_aperture)}
+                                ${createSpecItem('Min Aperture', item.max_aperture_max ? `f/${item.max_aperture_max}` : null)}
+                                ${createSpecItem('Aperture Blades', item.aperture_blades)}
+                            </div>
+                            
+                            <div class="spec-group">
+                                <div class="spec-group-title">Features & Build</div>
+                                ${createSpecItem('Image Stabilization', item.has_image_stabilization ? 'Yes' : 'No')}
+                                ${createSpecItem('IS Stops', item.stabilization_stops ? `${item.stabilization_stops} stops` : null)}
+                                ${createSpecItem('Weather Sealed', item.is_weather_sealed ? 'Yes' : 'No')}
+                                ${createSpecItem('Autofocus', item.autofocus_type)}
+                            </div>
+                            
+                            <div class="spec-group">
+                                <div class="spec-group-title">Physical & Optical</div>
+                                ${createSpecItem('Weight', item.weight_g ? `${item.weight_g}g` : null)}
+                                ${createSpecItem('Length', item.length_mm ? `${item.length_mm}mm` : null)}
+                                ${createSpecItem('Diameter', item.diameter_mm ? `${item.diameter_mm}mm` : null)}
+                                ${createSpecItem('Filter Size', item.filter_diameter_mm ? `${item.filter_diameter_mm}mm` : null)}
+                                ${createSpecItem('Min Focus Distance', item.min_focus_distance_cm ? `${item.min_focus_distance_cm}cm` : null)}
+                                ${createSpecItem('Max Magnification', item.max_magnification ? `${item.max_magnification}x` : null)}
+                                ${createSpecItem('Elements/Groups', item.elements && item.groups ? `${item.elements}/${item.groups}` : null)}
+                            </div>
+                            
+                            <div class="spec-group">
+                                <div class="spec-group-title">Pricing & Release</div>
+                                ${createSpecItem('MSRP', item.msrp_usd ? `$${item.msrp_usd.toLocaleString()}` : null)}
+                                ${createSpecItem('Current Price', item.current_price_usd ? `$${item.current_price_usd.toLocaleString()}` : null)}
+                                ${createSpecItem('Released', item.release_month && item.release_year ? 
+                                    `${item.release_month} ${item.release_year}` : item.release_year)}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="product-card" data-camera-id="${i}" data-type="${currentType}">
+                        <div class="product-image-container">
+                            <img src="${imageUrl}" alt="${item.brand} ${item.model_name}" class="product-image" onerror="this.src='${placeholderUrl}'">
+                            <div class="product-brand">${item.brand}</div>
+                            ${statusTag}
+                            <div class="product-info">
+                                <div class="product-info-row">
+                                    <div class="product-name">${item.model_name}</div>
+                                    ${priceHtml}
+                                </div>
+                                ${currentType === 'body' ? `<div class="product-specs">${specs}</div>` : ''}
+                            </div>
+                        </div>
+                        <div class="card-specs-detail">
+                            ${detailedSpecs}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Set up click handlers ONCE (outside renderProducts to avoid duplicates)
+        let clickHandlersSetup = false;
+        function setupClickHandlers() {
+            if (clickHandlersSetup) return;
+            clickHandlersSetup = true;
+            
+            const grid = document.getElementById('products-grid');
+            let mouseDownTime = 0;
+            let mouseDownX = 0;
+            let mouseDownY = 0;
+            let clickedCard = null;
+            
+            // Single mousedown listener for entire grid
+            grid.addEventListener('mousedown', function(e) {
+                const card = e.target.closest('.product-card');
+                if (card) {
+                    clickedCard = card;
+                    mouseDownTime = Date.now();
+                    mouseDownX = e.clientX;
+                    mouseDownY = e.clientY;
+                }
+            }, { passive: true });
+            
+            // Single click listener for entire grid
+            grid.addEventListener('click', function(e) {
+                // Find the card that was clicked
+                const card = e.target.closest('.product-card');
+                if (!card || card !== clickedCard) return;
+                
+                // CRITICAL: Don't process clicks during scroll
+                if (isPageScrolling) {
+                    return;
+                }
+                
+                // Don't close if clicking the close button
+                if (e.target.classList.contains('specs-close-btn') || 
+                    e.target.closest('.specs-close-btn')) {
+                    return;
+                }
+                
+                // Check if card is locked (animation in progress)
+                if (card.classList.contains('animating')) {
+                    return;
+                }
+                
+                // Mobile-friendly timing (more lenient for touch)
+                const isMobile = window.innerWidth <= 768;
+                const maxDuration = isMobile ? 300 : 200;
+                const maxMovement = isMobile ? 15 : 10;
+                
+                // Calculate time between mousedown and mouseup (click)
+                const clickDuration = Date.now() - mouseDownTime;
+                
+                // Calculate mouse movement distance
+                const moveDistance = Math.sqrt(
+                    Math.pow(e.clientX - mouseDownX, 2) + 
+                    Math.pow(e.clientY - mouseDownY, 2)
+                );
+                
+                // If click duration too long OR moved too much, it's likely scrolling/dragging
+                if (clickDuration > maxDuration || moveDistance > maxMovement) {
+                    return;
+                }
+                
+                // Check if there's any text selected INSIDE this card
+                const selection = window.getSelection();
+                if (selection && selection.toString().length > 0) {
+                    // Only block if the selection is within this card
+                    const range = selection.getRangeAt(0);
+                    if (card.contains(range.commonAncestorContainer)) {
+                        return; // Don't flip if text in this card is selected
+                    }
+                }
+                
+                // Toggle between expanded and collapsed
+                if (card.classList.contains('expanded')) {
+                    // Clicking expanded card - fade back to image
+                    fadeOutSpecs(card);
+                } else {
+                    // Clicking collapsed card - show specs with shutter
+                    openCardSpecs(card);
+                }
+            });
+        }
+        
+        function fadeOutSpecs(card) {
+            // Lock the card during animation
+            card.classList.add('animating');
+            
+            const specsDetail = card.querySelector('.card-specs-detail');
+            const imageContainer = card.querySelector('.product-image-container');
+            
+            // Quick fade out specs
+            specsDetail.style.transition = 'opacity 0.2s ease';
+            specsDetail.style.opacity = '0';
+            
+            // Fade in image
+            imageContainer.style.transition = 'opacity 0.2s ease';
+            imageContainer.style.opacity = '1';
+            
+            setTimeout(() => {
+                card.classList.remove('expanded');
+                // Reset transitions and opacity
+                specsDetail.style.transition = '';
+                specsDetail.style.opacity = '';
+                imageContainer.style.transition = '';
+                imageContainer.style.opacity = '';
+                
+                // Unlock the card after animation completes
+                card.classList.remove('animating');
+            }, 200);
+        }
+        
+        function createSpecItem(label, value) {
+            if (!value || value === 'null') return '';
+            return `
+                <div class="spec-item">
+                    <span class="spec-label">${label}</span>
+                    <span class="spec-value">${value}</span>
+                </div>
+            `;
+        }
+        
+        // Make closeCardSpecs globally accessible
+        window.closeCardSpecs = function(button) {
+            const card = button.closest('.product-card');
+            fadeOutSpecs(card);
+        };
+        
+        function openCardSpecs(card) {
+            // Lock the card during animation
+            card.classList.add('animating');
+            
+            // Simple fade for all cards (camera bodies and lenses)
+            card.classList.add('expanded');
+            
+            // Unlock after a brief moment (fade transition time)
+            setTimeout(() => {
+                card.classList.remove('animating');
+            }, 150);
+        }
+        
+        }); // End of DOMContentLoaded
+    </script>
+</body>
+</html>

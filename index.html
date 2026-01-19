@@ -3307,8 +3307,6 @@
             }, 150);
         }
         
-        }); // End of DOMContentLoaded
-
         // ============ COMPARISON FEATURE ============
         
         let compareCart = [];
@@ -3360,7 +3358,12 @@
                 e.preventDefault();
                 dropzone.classList.remove('drag-over');
                 
+                console.log('=== DROP EVENT ===');
                 const itemIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                console.log('Item index from drag:', itemIndex);
+                console.log('currentFilteredItems length:', currentFilteredItems.length);
+                console.log('currentFilteredItems:', currentFilteredItems);
+                
                 addToCompareCart(itemIndex);
             });
         }
@@ -3560,6 +3563,8 @@
         
         // ============ END COMPARISON FEATURE ============
         
+        }); // End of DOMContentLoaded
+    
     </script>
     
         <!-- Comparison Modal -->

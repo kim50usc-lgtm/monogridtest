@@ -2952,6 +2952,9 @@
             }
 
 
+            // Store filtered items globally for drag-and-drop
+            currentFilteredItems = filtered;
+            
             // Render
             grid.innerHTML = filtered.map((item, i) => {
                 let specs = '';
@@ -3310,17 +3313,25 @@
         
         let compareCart = [];
         
+        // Store filtered items globally so drag handlers can access them
+        let currentFilteredItems = [];
+        
         // Make product cards draggable
         function makeCardsDraggable() {
             const cards = document.querySelectorAll('.product-card');
+            
             cards.forEach(card => {
                 card.setAttribute('draggable', 'true');
                 
                 card.addEventListener('dragstart', (e) => {
                     card.classList.add('dragging');
                     e.dataTransfer.effectAllowed = 'copy';
-                    const cameraId = card.dataset.cameraId;
-                    e.dataTransfer.setData('text/plain', cameraId);
+                    
+                    // Get the filtered index from data-camera-id
+                    const filteredIndex = parseInt(card.dataset.cameraId);
+                    
+                    // Pass just the filtered index
+                    e.dataTransfer.setData('text/plain', filteredIndex.toString());
                 });
                 
                 card.addEventListener('dragend', () => {
@@ -3355,14 +3366,17 @@
         }
         
         // Add item to compare cart
-        function addToCompareCart(itemIndex) {
-            const items = currentType === 'body' ? allCameras : allLenses;
-            const item = items[itemIndex];
+        function addToCompareCart(filteredIndex) {
+            const item = currentFilteredItems[filteredIndex];
             
-            if (!item) return;
+            if (!item) {
+                console.error('Item not found at filtered index:', filteredIndex);
+                return;
+            }
             
             // Check if already in cart
             if (compareCart.some(cartItem => cartItem.id === item.id && cartItem.type === currentType)) {
+                console.log('Item already in cart');
                 return;
             }
             
@@ -3375,9 +3389,11 @@
             // Add to cart with type info
             compareCart.push({
                 ...item,
-                type: currentType,
-                index: itemIndex
+                type: currentType
             });
+            
+            console.log('Added to cart:', item.brand, item.model_name);
+            console.log('Cart now has:', compareCart.length, 'items');
             
             updateCompareCart();
         }

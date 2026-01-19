@@ -2,16 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>monogrid</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
-        
+    /* the title and all other "monogrid" instances should be upadated to "ndex" or "ndex.info" */    
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        /* Prevent scroll before app is ready */
+        body.loading {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
         }
         
         :root {
@@ -176,14 +182,45 @@
             height: 24px;
             object-fit: contain;
         }
+
+       /* Mobile header bar */
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 0 1rem;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 200;
+        }
         
+        .mobile-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+        }
+        
+        .mobile-logo img {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+        }
         /* Mobile menu toggle */
         .mobile-menu-toggle {
             display: none;
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            z-index: 200;
+            position: relative;  /* Changed from fixed */
+            top: auto;           /* Changed from 1rem */
+            right: auto;         /* Changed from 1rem */
+            z-index: auto;       /* Changed from 200 */
             width: 40px;
             height: 40px;
             background: var(--accent);
@@ -379,6 +416,30 @@
             outline: none;
             border-color: #1a1a1a;
         }
+
+            /* Clear filters button */
+        .clear-filters-btn {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .clear-filters-btn:hover {
+            background: var(--bg-primary);
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
         
         /* PRICE SLIDER */
         .price-slider-container {
@@ -460,6 +521,7 @@
         .products-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 1fr;
             gap: 0;
             width: 100%;
             /* Scroll performance optimizations */
@@ -592,7 +654,6 @@
             overflow-x: hidden;
             flex: 1;
         }
-        }
         
         .spec-group {
             background: #f9f9f9;
@@ -652,6 +713,10 @@
             height: 90%;
             object-fit: contain;
             object-position: center;
+        }
+
+        .product-card[data-type="body"][data-height-tall="true"] .product-image {
+            transform: translate(-50%, -55%);
         }
         
         .product-brand {
@@ -791,26 +856,46 @@
         }
         
         @media (max-width: 768px) {
-            /* Show hamburger menu on mobile */
+            /* Show mobile header bar */
+            .mobile-header {
+                display: flex;
+            }
+            
             .mobile-menu-toggle {
                 display: flex;
+            }
+            
+            /* TWO columns on mobile portrait with grid-auto-flow dense for layout */
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-auto-rows: minmax(150px, auto);
+                grid-auto-flow: dense;
+            }
+            
+            /* Mobile: Expanded cards span 2 rows for better spec viewing */
+            .product-card.expanded {
+                grid-row: span 2;
             }
             
             /* Sidebar becomes collapsible overlay on mobile */
             .sidebar {
                 position: fixed;
                 left: -100%;
-                top: 0;
+                top: 60px;                          /* Add this */
                 width: 280px;
-                height: 100vh;
+                height: calc(100vh - 60px);         /* Add this */
                 border-right: 1px solid var(--border);
                 border-bottom: none;
                 padding: 1rem;
-                max-height: 100vh;
+                max-height: calc(100vh - 60px);     /* Add this */
                 overflow-y: auto;
                 transition: left 0.3s ease;
                 z-index: 150;
                 background: var(--bg-secondary);
+            }
+
+            .sidebar .logo {
+                display: none;
             }
             
             .sidebar.open {
@@ -838,14 +923,9 @@
             
             .main-content {
                 margin-left: 0;
-                padding-top: 60px; /* Space for menu button */
+                padding-top: 60px; /* Extra space for fixed mobile header */
             }
-            
-            /* TWO columns on mobile portrait */
-            .products-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
+                    
             .product-card:nth-child(-n+2) {
                 border-top: 1px solid #e0e0e0;
             }
@@ -1063,7 +1143,7 @@
     <div id="password-screen">
         <div class="password-container">
             <h1 class="password-title">
-                <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1766101140/cc1325a0-c83b-454b-86d5-1dcec02d36e2_w2y9to.jpg" alt="monogrid logo">
+                <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1766165802/f9539356-eefc-4ae6-9cfd-efa3f87f68d0_xgpbkq.jpg" alt="monogrid logo">
                 monogrid
             </h1>
             <form class="password-form" id="password-form">
@@ -1083,12 +1163,18 @@
     <!-- Main App -->
     <div id="app">
         <div class="app-container">
-            <!-- Mobile menu toggle -->
-            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+            <!-- Mobile header bar -->
+            <div class="mobile-header">
+                <div class="mobile-logo">
+                    <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1766165802/f9539356-eefc-4ae6-9cfd-efa3f87f68d0_xgpbkq.jpg" alt="monogrid logo">
+                    <span>monogrid</span>
+                </div>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
             
             <!-- Sidebar overlay for mobile -->
             <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -1096,7 +1182,7 @@
             <!-- Sidebar -->
             <aside class="sidebar">
                 <div class="logo">
-                    <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1766101140/cc1325a0-c83b-454b-86d5-1dcec02d36e2_w2y9to.jpg" alt="monogrid logo">
+                    <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1766165802/f9539356-eefc-4ae6-9cfd-efa3f87f68d0_xgpbkq.jpg" alt="monogrid logo">
                     monogrid
                 </div>
                 
@@ -1128,6 +1214,7 @@
                             <option value="size-asc">Size: Smallest First</option>
                             <option value="size-desc">Size: Largest First</option>
                         </select>
+                            <button class="clear-filters-btn" id="clear-body-filters">Clear Filters</button>
                     </div>
                     
                     <div class="filter-section">
@@ -1185,11 +1272,31 @@
                             <option value="aperture-asc">Aperture: Wide to Narrow</option>
                             <option value="aperture-desc">Aperture: Narrow to Wide</option>
                         </select>
+                            <button class="clear-filters-btn" id="clear-lens-filters">Clear Filters</button>
+
                     </div>
                 
                     <div class="filter-section">
                         <div class="filter-title">Brand</div>
                         <div class="filter-group" id="lens-brand-filters"></div>
+                    </div>
+
+                    <div class="filter-section">
+                        <div class="filter-title">Lens Type</div>
+                        <div class="filter-group" id="lens-type-filters">
+                            <div class="filter-item">
+                                <input type="checkbox" id="lens-type-prime" value="Prime" data-filter="lensType">
+                                <label for="lens-type-prime" class="filter-label">Prime</label>
+                            </div>
+                            <div class="filter-item">
+                                <input type="checkbox" id="lens-type-zoom" value="Zoom" data-filter="lensType">
+                                <label for="lens-type-zoom" class="filter-label">Zoom</label>
+                            </div>
+                            <div class="filter-item">
+                                <input type="checkbox" id="lens-type-teleconverter" value="Teleconverter" data-filter="lensType">
+                                <label for="lens-type-teleconverter" class="filter-label">Teleconverter</label>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="filter-section">
@@ -1325,40 +1432,94 @@
                 
                 console.log('Password submitted');
                 
-                if (password === CORRECT_PASSWORD) {
-                    console.log('Password correct, authenticating...');
-                    sessionStorage.setItem(PASSWORD_KEY, 'true');
-                    sessionStorage.setItem(AUTH_TIME_KEY, Date.now().toString());
-                    document.getElementById('password-screen').style.display = 'none';
-                    document.getElementById('app').classList.add('authenticated');
-                    console.log('Calling initApp()...');
-                    initApp();
-                } else {
-                    console.log('Password incorrect');
-                    document.getElementById('password-error').classList.add('show');
-                    document.getElementById('password-input').value = '';
-                    document.getElementById('password-input').focus();
-                    setTimeout(() => {
-                        document.getElementById('password-error').classList.remove('show');
-                    }, 3000);
-                }
-            });
+            if (password === CORRECT_PASSWORD) {
+                console.log('Password correct, authenticating...');
+                sessionStorage.setItem(PASSWORD_KEY, 'true');
+                sessionStorage.setItem(AUTH_TIME_KEY, Date.now().toString());
+                
+                // Hide password screen
+                document.getElementById('password-screen').style.display = 'none';
+                document.getElementById('app').classList.add('authenticated');
+                
+                // Force scroll BEFORE calling initApp
+                window.scrollTo(0, 0);
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+                
+                console.log('Calling initApp()...');
+                initApp();
+                
+                // Aggressive scroll after initApp starts
+                setTimeout(() => {
+                    window.scrollTo(0, 0);
+                    document.documentElement.scrollTop = 0;
+                    document.body.scrollTop = 0;
+                }, 0);
+                
+                setTimeout(() => {
+                    window.scrollTo(0, 0);
+                    document.documentElement.scrollTop = 0;
+                    document.body.scrollTop = 0;
+                }, 50);
+                
+                setTimeout(() => {
+                    window.scrollTo(0, 0);
+                    document.documentElement.scrollTop = 0;
+                    document.body.scrollTop = 0;
+                }, 150);
+                
+                setTimeout(() => {
+                    window.scrollTo(0, 0);
+                    document.documentElement.scrollTop = 0;
+                    document.body.scrollTop = 0;
+                }, 300);
+            } else {
+                console.log('Password incorrect');
+                document.getElementById('password-error').classList.add('show');
+                document.getElementById('password-input').value = '';
+                document.getElementById('password-input').focus();
+                setTimeout(() => {
+                    document.getElementById('password-error').classList.remove('show');
+                }, 3000);
+            }
+            });  // <-- ADD THIS LINE (closes the form submit event listener)
+
 
             // Logout
             document.getElementById('logout-btn').addEventListener('click', () => {
                 sessionStorage.removeItem(PASSWORD_KEY);
                 sessionStorage.removeItem(AUTH_TIME_KEY);
+                // NEW: Also clear view type preference on logout
+                localStorage.removeItem('monogrid_view_type');
                 location.reload();
             });
 
-        async function initApp() {
-            await loadData();
-            setupTypeToggle();
-            setupFilters();
-            renderProducts();
-            setupClickHandlers(); // Set up event delegation after first render
-            setupMobileMenu(); // Set up mobile sidebar toggle
-        }
+            async function initApp() {
+                await loadData();  // Wait for ALL data to load
+                
+                console.log('📊 Data loaded - Cameras:', allCameras.length, 'Lenses:', allLenses.length);
+                
+                setupTypeToggle();
+                setupFilters();  // Set up filters AFTER data is loaded
+                
+                // Restore saved view type
+                const savedViewType = localStorage.getItem('monogrid_view_type');
+                
+                if (savedViewType === 'lens' && allLenses.length > 0) {
+                    console.log('📍 Restoring lens view...');
+                    currentType = 'lens';  // Set the type directly instead of clicking
+                    document.getElementById('lens-btn').classList.add('active');
+                    document.getElementById('body-btn').classList.remove('active');
+                    document.getElementById('lens-filters').style.display = 'block';
+                    document.getElementById('body-filters').style.display = 'none';
+                }
+                
+                renderProducts();
+                setupClickHandlers();
+                setupMobileMenu();
+                
+                window.scrollTo(0, 0);
+            }
         
         // Mobile menu toggle functionality
         function setupMobileMenu() {
@@ -1393,6 +1554,28 @@
                     }, 300);
                 }
             });
+        }
+
+        // Helper function to convert release date to sortable number
+        function getReleaseDateValue(item) {
+            if (!item.release_year) return 0;
+            
+            const year = parseInt(item.release_year);
+            let month = 0;
+            
+            // Convert month name to number (1-12)
+            if (item.release_month) {
+                const monthNames = {
+                    'January': 1, 'February': 2, 'March': 3, 'April': 4,
+                    'May': 5, 'June': 6, 'July': 7, 'August': 8,
+                    'September': 9, 'October': 10, 'November': 11, 'December': 12
+                };
+                month = monthNames[item.release_month] || 0;
+            }
+            
+            // Return year * 100 + month for proper sorting
+            // e.g., March 2024 = 202403, January 2025 = 202501
+            return year * 100 + month;
         }
 
         async function loadData() {
@@ -1459,7 +1642,13 @@
                 
                 document.getElementById('loading').style.display = 'none';
                 console.log('✓ Data loading complete');
-                
+
+                    // Force re-render if we're on lens view
+                if (currentType === 'lens') {
+                    console.log('🔄 Re-rendering lens view after data load');
+                    renderProducts();
+                }
+                            
             } catch (error) {
                 console.error('Fatal error loading data:', error);
                 document.getElementById('loading').textContent = `Error: ${error.message}. Please refresh the page.`;
@@ -1471,7 +1660,7 @@
             const lensBtn = document.getElementById('lens-btn');
             const bodyFilters = document.getElementById('body-filters');
             const lensFilters = document.getElementById('lens-filters');
-
+        
             bodyBtn.addEventListener('click', () => {
                 currentType = 'body';
                 bodyBtn.classList.add('active');
@@ -1480,8 +1669,11 @@
                 lensFilters.style.display = 'none';
                 clearFilters();
                 renderProducts();
+                
+                // NEW: Save selection to localStorage
+                localStorage.setItem('monogrid_view_type', 'body');
             });
-
+        
             lensBtn.addEventListener('click', () => {
                 console.log('🔍 Lens button clicked');
                 console.log('  allLenses.length:', allLenses.length);
@@ -1493,6 +1685,9 @@
                 clearFilters();
                 renderProducts();
                 console.log('  renderProducts() called for lenses');
+                
+                // NEW: Save selection to localStorage
+                localStorage.setItem('monogrid_view_type', 'lens');
             });
         }
 
@@ -1507,7 +1702,7 @@
             filters.ibis.clear();
             filters.priceMin = 0;
             filters.priceMax = 10000;
-            filters.focalMin = 14;
+            filters.focalMin = 5;
             filters.focalMax = 600;
             document.getElementById('search-input').value = '';
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
@@ -1521,8 +1716,14 @@
             // Reset focal length sliders
             const focalMinSlider = document.getElementById('focal-min');
             const focalMaxSlider = document.getElementById('focal-max');
-            if (focalMinSlider) focalMinSlider.value = 14;
+            if (focalMinSlider) focalMinSlider.value = 5;
             if (focalMaxSlider) focalMaxSlider.value = 600;
+
+            // Reset sort dropdowns
+            const sortSelect = document.getElementById('sort-select');
+            const lensSortSelect = document.getElementById('lens-sort-select');
+            if (sortSelect) sortSelect.value = 'release-desc';
+            if (lensSortSelect) lensSortSelect.value = 'release-desc';
             
             updatePriceDisplay();
             updateFocalDisplay();
@@ -1559,8 +1760,15 @@
 
             // Lens filters
             const lensBrands = [...new Set(allLenses.map(l => l.brand))].sort();
-            const lensMounts = [...new Set(allLenses.map(l => l.mount).filter(Boolean))].sort();
-
+            
+            // Split multi-mount lenses into separate mount options
+            const lensMounts = [...new Set(
+                allLenses
+                    .map(l => l.mount)
+                    .filter(Boolean)
+                    .flatMap(mount => mount.split(',').map(m => m.trim()))  // Split by comma
+            )].sort();
+        
             // Lens brand filters
             const lensBrandFilters = document.getElementById('lens-brand-filters');
             lensBrands.forEach(brand => {
@@ -1572,13 +1780,13 @@
                 `;
                 lensBrandFilters.appendChild(div);
             });
-
+        
             // Lens mount filters
             const lensMountFilters = document.getElementById('lens-mount-filters');
             lensMounts.forEach(mount => {
                 const div = document.createElement('div');
                 div.className = 'filter-item';
-                const mountId = mount.replace(/\s+/g, '-');
+                const mountId = mount.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
                 div.innerHTML = `
                     <input type="checkbox" id="mount-${mountId}" value="${mount}" data-filter="mount">
                     <label for="mount-${mountId}" class="filter-label">${mount}</label>
@@ -1644,15 +1852,44 @@
             
             // Focal length slider setup
             setupFocalSlider();
+
+            // Clear filters buttons
+            const clearBodyBtn = document.getElementById('clear-body-filters');
+            const clearLensBtn = document.getElementById('clear-lens-filters');
+            
+            if (clearBodyBtn) {
+                clearBodyBtn.addEventListener('click', () => {
+                    clearFilters();
+                    renderProducts();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+            
+            if (clearLensBtn) {
+                clearLensBtn.addEventListener('click', () => {
+                    clearFilters();
+                    renderProducts();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
         }
         
         function updateAllFilters() {
-            // Get currently filtered cameras based on active filters
-            const filteredCameras = getFilteredCamerasForOptions();
-            
-            // Update each filter type
-            updateFilterOptions('brand', filteredCameras);
-            updateFilterOptions('sensor', filteredCameras);
+            if (currentType === 'body') {
+                // Get currently filtered cameras based on active filters
+                const filteredCameras = getFilteredCamerasForOptions();
+                
+                // Update each filter type
+                updateFilterOptions('brand', filteredCameras);
+                updateFilterOptions('sensor', filteredCameras);
+            } else if (currentType === 'lens') {
+                // Get currently filtered lenses based on active filters
+                const filteredLenses = getFilteredLensesForOptions();
+                
+                // Update each filter type
+                updateLensFilterOptions('brand', filteredLenses);
+                updateLensFilterOptions('mount', filteredLenses);
+            }
         }
         
         function getFilteredCamerasForOptions() {
@@ -1688,6 +1925,68 @@
                 return true;
             });
         }
+
+            function getFilteredLensesForOptions() {
+        // Apply all current filters EXCEPT the ones we're about to update
+        return allLenses.filter(lens => {
+            // Brand filter
+            if (filters.brands.size > 0 && !filters.brands.has(lens.brand)) {
+                return false;
+            }
+            
+            // Mount filter
+            if (filters.mounts.size > 0) {
+                const lensMounts = lens.mount ? lens.mount.split(',').map(m => m.trim()) : [];
+                const hasMatchingMount = lensMounts.some(mount => filters.mounts.has(mount));
+                if (!hasMatchingMount) {
+                    return false;
+                }
+            }
+            
+            // Weather sealing filter
+            if (filters.weather.size > 0) {
+                const wantsWeather = filters.weather.has('true');
+                const wantsNoWeather = filters.weather.has('false');
+                
+                // Skip if both are checked
+                if (!(wantsWeather && wantsNoWeather)) {
+                    const hasWeather = lens.is_weather_sealed === true;  // Changed from item to lens
+                    
+                    if (wantsWeather && !hasWeather) return false;
+                    if (wantsNoWeather && hasWeather) return false;
+                }
+            }
+            
+            // Image stabilization filter
+            if (filters.is.size > 0) {
+                const wantsIS = filters.is.has('true');
+                const wantsNoIS = filters.is.has('false');
+                
+                // Skip if both are checked
+                if (!(wantsIS && wantsNoIS)) {
+                    const hasIS = lens.has_image_stabilization === true;  // Changed from item to lens
+                    
+                    if (wantsIS && !hasIS) return false;
+                    if (wantsNoIS && hasIS) return false;
+                }
+            }
+            
+            // Focal length filter
+            if (lens.focal_length) {
+                const match = lens.focal_length.match(/(\d+)(?:-(\d+))?/);
+                if (match) {
+                    const lensFocalMin = parseInt(match[1]);
+                    const lensFocalMax = match[2] ? parseInt(match[2]) : lensFocalMin;
+                    
+                    if (lensFocalMax < filters.focalMin || lensFocalMin > filters.focalMax) {
+                        return false;
+                    }
+                }
+            }
+            
+            return true;
+        });
+    }
         
         function updateFilterOptions(filterType, availableCameras) {
             const containerMap = {
@@ -1790,6 +2089,146 @@
             const unavailableSelections = [...filters[filterSetName]].filter(s => !availableOptions.includes(s));
             unavailableSelections.forEach(s => filters[filterSetName].delete(s));
         }
+
+            function updateLensFilterOptions(filterType, availableLenses) {
+        const containerMap = {
+            'brand': 'lens-brand-filters',
+            'mount': 'lens-mount-filters'
+        };
+        
+        const propertyMap = {
+            'brand': 'brand',
+            'mount': 'mount'
+        };
+        
+        const filterSetMap = {
+            'brand': 'brands',
+            'mount': 'mounts'
+        };
+        
+        const containerId = containerMap[filterType];
+        const property = propertyMap[filterType];
+        const filterSetName = filterSetMap[filterType];
+        
+        if (!containerId) return;
+        
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        // Get all possible options
+        let allOptions;
+        if (filterType === 'mount') {
+            // Split multi-mount lenses
+            allOptions = [...new Set(
+                allLenses
+                    .map(l => l[property])
+                    .filter(Boolean)
+                    .flatMap(mount => mount.split(',').map(m => m.trim()))
+            )].sort();
+        } else {
+            allOptions = [...new Set(allLenses.map(l => l[property]).filter(Boolean))].sort();
+        }
+        
+        // For each option, determine if it should be available
+        const availableOptions = allOptions.filter(option => {
+            return allLenses.some(lens => {
+                // Check if lens has this option
+                let hasOption = false;
+                if (filterType === 'mount') {
+                    const lensMounts = lens[property] ? lens[property].split(',').map(m => m.trim()) : [];
+                    hasOption = lensMounts.includes(option);
+                } else {
+                    hasOption = lens[property] === option;
+                }
+                
+                if (!hasOption) return false;
+                
+                // Check all other filters (not including current filter type)
+                // Brand filter (skip if we're updating brand)
+                if (filterType !== 'brand' && filters.brands.size > 0 && !filters.brands.has(lens.brand)) {
+                    return false;
+                }
+                
+                // Mount filter (skip if we're updating mount)
+                if (filterType !== 'mount' && filters.mounts.size > 0) {
+                    const lensMounts = lens.mount ? lens.mount.split(',').map(m => m.trim()) : [];
+                    const hasMatchingMount = lensMounts.some(mount => filters.mounts.has(mount));
+                    if (!hasMatchingMount) return false;
+                }
+                
+                // Weather sealing filter
+                if (filters.weather.size > 0) {
+                    const hasWeather = lens.is_weather_sealed === true;
+                    const wantsWeather = filters.weather.has('true');
+                    const wantsNoWeather = filters.weather.has('false');
+                    
+                    if (wantsWeather && !hasWeather) return false;
+                    if (wantsNoWeather && hasWeather) return false;
+                }
+                
+                // Image stabilization filter
+                if (filters.is.size > 0) {
+                    const hasIS = lens.has_image_stabilization === true;
+                    const wantsIS = filters.is.has('true');
+                    const wantsNoIS = filters.is.has('false');
+                    
+                    if (wantsIS && !hasIS) return false;
+                    if (wantsNoIS && hasIS) return false;
+                }
+                
+                // Focal length filter
+                if (lens.focal_length) {
+                    const match = lens.focal_length.match(/(\d+)(?:-(\d+))?/);
+                    if (match) {
+                        const lensFocalMin = parseInt(match[1]);
+                        const lensFocalMax = match[2] ? parseInt(match[2]) : lensFocalMin;
+                        
+                        if (lensFocalMax < filters.focalMin || lensFocalMin > filters.focalMax) {
+                            return false;
+                        }
+                    }
+                }
+                
+                return true;
+            });
+        });
+        
+        // Clear and rebuild the filter options
+        container.innerHTML = '';
+        
+        availableOptions.forEach(option => {
+            const div = document.createElement('div');
+            div.className = 'filter-item';
+            
+            // Check if this option is currently selected
+            const isChecked = filters[filterSetName].has(option);
+            
+            const safeId = `lens-${filterType}-${option.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '')}`;
+            
+            div.innerHTML = `
+                <input type="checkbox" id="${safeId}" value="${option}" data-filter="${filterType}" ${isChecked ? 'checked' : ''}>
+                <label for="${safeId}" class="filter-label">${option}</label>
+            `;
+            container.appendChild(div);
+            
+            // Add event listener
+            const checkbox = div.querySelector('input');
+            checkbox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    filters[filterSetName].add(option);
+                } else {
+                    filters[filterSetName].delete(option);
+                }
+                updateAllFilters();
+                renderProducts();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+        
+        // Clean up filter selections - remove any that are no longer available
+        const unavailableSelections = [...filters[filterSetName]].filter(s => !availableOptions.includes(s));
+        unavailableSelections.forEach(s => filters[filterSetName].delete(s));
+    }
 
         function setupPriceSlider() {
             const priceMinSlider = document.getElementById('price-min');
@@ -2014,39 +2453,70 @@
                     if (wantsNoIbis && hasIbis) return false;
                 }
 
-                // Price (body only)
-                if (currentType === 'body' && item.price_usd != null) {
-                    if (item.price_usd < filters.priceMin || item.price_usd > filters.priceMax) {
+                if (currentType === 'body') {
+                    const price = item.msrp_usd || item.current_price_usd || 0;
+                    if (price > 0 && (price < filters.priceMin || price > filters.priceMax)) {
                         return false;
                     }
                 }
 
                 // Lens-specific filters
                 if (currentType === 'lens') {
-                    // Mount filter
-                    if (filters.mounts.size > 0 && !filters.mounts.has(item.mount)) {
-                        return false;
+                    // Mount filter - handle multi-mount lenses
+                    if (filters.mounts.size > 0) {
+                        const lensMounts = item.mount ? item.mount.split(',').map(m => m.trim()) : [];
+                        const hasMatchingMount = lensMounts.some(mount => filters.mounts.has(mount));
+                        if (!hasMatchingMount) {
+                            return false;
+                        }
                     }
 
-                    // Weather sealing filter
-                    if (filters.weather.size > 0) {
-                        const hasWeather = item.weather_sealed === true;
-                        const wantsWeather = filters.weather.has('true');
-                        const wantsNoWeather = filters.weather.has('false');
+                // Lens Type filter (Prime vs Zoom vs Teleconverter)
+                if (filters.lensTypes.size > 0) {
+                    const wantsPrime = filters.lensTypes.has('Prime');
+                    const wantsZoom = filters.lensTypes.has('Zoom');
+                    const wantsTeleconverter = filters.lensTypes.has('Teleconverter');
+                    
+                    // If all are checked, show all lenses (skip filter)
+                    if (!(wantsPrime && wantsZoom && wantsTeleconverter)) {
+                        const lensType = item.lens_type ? item.lens_type.toLowerCase() : '';
+                        const isPrime = lensType.includes('prime');
+                        const isZoom = lensType.includes('zoom');
+                        const isTeleconverter = lensType.includes('teleconverter');
+                        
+                        if (wantsPrime && !isPrime) return false;
+                        if (wantsZoom && !isZoom) return false;
+                        if (wantsTeleconverter && !isTeleconverter) return false;
+                    }
+                }
+
+                // Weather sealing filter
+                if (filters.weather.size > 0) {
+                    const wantsWeather = filters.weather.has('true');
+                    const wantsNoWeather = filters.weather.has('false');
+                    
+                    // If both are checked, show all lenses (skip filter)
+                    if (!(wantsWeather && wantsNoWeather)) {
+                        const hasWeather = item.is_weather_sealed === true;
                         
                         if (wantsWeather && !hasWeather) return false;
                         if (wantsNoWeather && hasWeather) return false;
                     }
-
-                    // Image stabilization filter
-                    if (filters.is.size > 0) {
-                        const hasIS = item.image_stabilization === true;
-                        const wantsIS = filters.is.has('true');
-                        const wantsNoIS = filters.is.has('false');
+                }
+                
+                // Image stabilization filter
+                if (filters.is.size > 0) {
+                    const wantsIS = filters.is.has('true');
+                    const wantsNoIS = filters.is.has('false');
+                    
+                    // If both are checked, show all lenses (skip filter)
+                    if (!(wantsIS && wantsNoIS)) {
+                        const hasIS = item.has_image_stabilization === true;
                         
                         if (wantsIS && !hasIS) return false;
                         if (wantsNoIS && hasIS) return false;
                     }
+                }
 
                     // Focal length filter
                     if (item.focal_length) {
@@ -2078,12 +2548,12 @@
             filtered.sort((a, b) => {
                 switch(filters.sortBy) {
                     case 'release-desc':
-                        // Newest first (default)
-                        return (b.release_year || 0) - (a.release_year || 0);
+                        // Newest first (default) - sort by year and month
+                        return getReleaseDateValue(b) - getReleaseDateValue(a);
                     
                     case 'release-asc':
-                        // Oldest first
-                        return (a.release_year || 0) - (b.release_year || 0);
+                        // Oldest first - sort by year and month
+                        return getReleaseDateValue(a) - getReleaseDateValue(b);
                     
                     case 'price-asc':
                         // Price: Low to High
@@ -2205,6 +2675,9 @@
 
                 // Determine product status
                 let statusTag = '';
+
+                // Check if this is a tall camera body (height > 135mm) for vertical centering adjustment
+                const isTallBody = currentType === 'body' && item.height_mm && item.height_mm > 135;
                 
                 // NEW if released within last 12 months (1 year)
                 if (item.release_year && item.release_month && typeof item.release_month === 'string') {
@@ -2240,9 +2713,9 @@
                 }
                 
                 // DISCONTINUED only if explicitly marked in database
-                if (item.is_discontinued === true) {
-                    statusTag = '<div class="product-tag discontinued"></div>';
-                }
+                // if (item.is_discontinued === true) {
+                //     statusTag = '<div class="product-tag discontinued"></div>';
+                // }
 
                 // Determine price to display (prefer MSRP, fallback to current price)
                 const displayPrice = item.msrp_usd || item.current_price_usd;
@@ -2273,12 +2746,14 @@
                             ${createSpecItem('IBIS', item.has_ibis ? 'Yes' : 'No')}
                             ${createSpecItem('IBIS Stops', item.ibis_stops ? `${item.ibis_stops} stops` : null)}
                             ${createSpecItem('Continuous FPS', item.continuous_shooting_fps ? `${item.continuous_shooting_fps} fps` : null)}
+                            ${createSpecItem('Max Shutter Speed', item.max_shutter_speed)}
                             ${createSpecItem('Battery Life', item.battery_life_shots ? `${item.battery_life_shots} shots` : null)}
                         </div>
                         
                         <div class="spec-group">
                             <div class="spec-group-title">Video & Physical</div>
                             ${createSpecItem('Max Video', item.video_max)}
+                            ${createSpecItem('Weather Sealed', item.environmentally_sealed ? 'Yes' : 'No')}
                             ${createSpecItem('Weight', item.weight_g ? `${item.weight_g}g` : null)}
                             ${createSpecItem('Dimensions', item.width_mm && item.height_mm && item.depth_mm ? 
                                 `${item.width_mm} × ${item.height_mm} × ${item.depth_mm} mm` : null)}
@@ -2310,7 +2785,7 @@
                                 ${createSpecItem('Lens Type', item.lens_type)}
                                 ${createSpecItem('Mount', item.mount)}
                                 ${createSpecItem('Focal Length', item.focal_length)}
-                                ${createSpecItem('Max Aperture', item.max_aperture)}
+                                ${createSpecItem('Max Aperture', item.max_aperture_min ? `f/${item.max_aperture_min}` : null)}
                                 ${createSpecItem('Min Aperture', item.max_aperture_max ? `f/${item.max_aperture_max}` : null)}
                                 ${createSpecItem('Aperture Blades', item.aperture_blades)}
                             </div>
@@ -2346,8 +2821,7 @@
                 }
 
                 return `
-                    <div class="product-card" data-camera-id="${i}" data-type="${currentType}">
-                        <div class="product-image-container">
+                        <div class="product-card" data-camera-id="${i}" data-type="${currentType}" data-height-tall="${isTallBody}">                        <div class="product-image-container">
                             <img src="${imageUrl}" alt="${item.brand} ${item.model_name}" class="product-image" onerror="this.src='${placeholderUrl}'">
                             <div class="product-brand">${item.brand}</div>
                             ${statusTag}

@@ -3305,6 +3305,257 @@
         }
         
         }); // End of DOMContentLoaded
+
+        // ============ COMPARISON FEATURE ============
+        
+        let compareCart = [];
+        
+        // Make product cards draggable
+        function makeCardsDraggable() {
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(card => {
+                card.setAttribute('draggable', 'true');
+                
+                card.addEventListener('dragstart', (e) => {
+                    card.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'copy';
+                    const cameraId = card.dataset.cameraId;
+                    e.dataTransfer.setData('text/plain', cameraId);
+                });
+                
+                card.addEventListener('dragend', () => {
+                    card.classList.remove('dragging');
+                });
+            });
+        }
+        
+        // Set up drop zone
+        function setupCompareDropzone() {
+            const dropzone = document.getElementById('compare-dropzone');
+            
+            if (!dropzone) return;
+            
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'copy';
+                dropzone.classList.add('drag-over');
+            });
+            
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.classList.remove('drag-over');
+            });
+            
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('drag-over');
+                
+                const itemIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                addToCompareCart(itemIndex);
+            });
+        }
+        
+        // Add item to compare cart
+        function addToCompareCart(itemIndex) {
+            const items = currentType === 'body' ? allCameras : allLenses;
+            const item = items[itemIndex];
+            
+            if (!item) return;
+            
+            // Check if already in cart
+            if (compareCart.some(cartItem => cartItem.id === item.id && cartItem.type === currentType)) {
+                return;
+            }
+            
+            // Check max limit
+            if (compareCart.length >= 4) {
+                alert('You can compare up to 4 items at once');
+                return;
+            }
+            
+            // Add to cart with type info
+            compareCart.push({
+                ...item,
+                type: currentType,
+                index: itemIndex
+            });
+            
+            updateCompareCart();
+        }
+        
+        // Remove from compare cart
+        function removeFromCompareCart(itemId, itemType) {
+            compareCart = compareCart.filter(item => !(item.id === itemId && item.type === itemType));
+            updateCompareCart();
+        }
+        
+        // Update compare cart display
+        function updateCompareCart() {
+            const slots = document.querySelectorAll('.compare-cart-slot');
+            const compareBtn = document.getElementById('compare-btn');
+            
+            // Update each slot
+            slots.forEach((slot, index) => {
+                const item = compareCart[index];
+                
+                if (item) {
+                    slot.classList.remove('empty');
+                    slot.innerHTML = `
+                        <img src="${item.image_url || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2ZmZmZmZiIvPjwvc3ZnPg=='}" 
+                             alt="${item.model_name}" 
+                             title="${item.brand} ${item.model_name}">
+                        <button class="compare-cart-slot-remove" onclick="removeFromCompareCart(${item.id}, '${item.type}')">×</button>
+                    `;
+                } else {
+                    slot.classList.add('empty');
+                    slot.innerHTML = '';
+                }
+            });
+            
+            // Update compare button
+            compareBtn.disabled = compareCart.length < 2;
+        }
+        
+        // Open comparison modal
+        function openCompareModal() {
+            if (compareCart.length < 2) return;
+            
+            const table = buildComparisonTable(compareCart);
+            document.getElementById('compare-modal-body').innerHTML = table;
+            
+            const itemType = compareCart[0].type === 'body' ? 'Camera Bodies' : 'Lenses';
+            document.getElementById('compare-modal-title').textContent = `Comparing ${compareCart.length} ${itemType}`;
+            
+            document.getElementById('compare-modal').classList.add('show');
+        }
+        
+        // Close comparison modal
+        function closeCompareModal() {
+            document.getElementById('compare-modal').classList.remove('show');
+        }
+        
+        // Build comparison table
+        function buildComparisonTable(items) {
+            const isCameraBody = items[0].type === 'body';
+            
+            const specs = isCameraBody ? [
+                { label: 'Brand', key: 'brand' },
+                { label: 'Model', key: 'model_name' },
+                { label: 'Price', key: 'msrp_usd', format: v => v ? `$${v.toLocaleString()}` : '—' },
+                { group: 'Sensor & Image' },
+                { label: 'Sensor Size', key: 'sensor_size' },
+                { label: 'Sensor Type', key: 'sensor_type' },
+                { label: 'Megapixels', key: 'megapixels', format: v => v ? `${v} MP` : '—' },
+                { label: 'ISO Range', key: 'iso_range' },
+                { group: 'Stabilization & Performance' },
+                { label: 'IBIS', key: 'has_ibis', format: v => v ? 'Yes' : 'No' },
+                { label: 'IBIS Stops', key: 'ibis_stops', format: v => v ? `${v} stops` : '—' },
+                { label: 'Continuous FPS', key: 'continuous_shooting_fps', format: v => v ? `${v} fps` : '—' },
+                { label: 'Battery Life', key: 'battery_life_shots', format: v => v ? `${v} shots` : '—' },
+                { group: 'Video & Physical' },
+                { label: 'Max Video', key: 'video_max' },
+                { label: 'Weather Sealed', key: 'environmentally_sealed', format: v => v ? 'Yes' : 'No' },
+                { label: 'Weight', key: 'weight_g', format: v => v ? `${v}g` : '—' },
+                { label: 'Dimensions', key: 'width_mm', format: (v, item) => {
+                    if (item.width_mm && item.height_mm && item.depth_mm) {
+                        return `${item.width_mm} × ${item.height_mm} × ${item.depth_mm} mm`;
+                    }
+                    return '—';
+                }}
+            ] : [
+                { label: 'Brand', key: 'brand' },
+                { label: 'Model', key: 'model_name' },
+                { label: 'Price', key: 'msrp_usd', format: v => v ? `$${v.toLocaleString()}` : '—' },
+                { group: 'Optical Specifications' },
+                { label: 'Lens Type', key: 'lens_type' },
+                { label: 'Mount', key: 'mount' },
+                { label: 'Focal Length', key: 'focal_length' },
+                { label: 'Max Aperture', key: 'max_aperture_min', format: v => v ? `f/${v}` : '—' },
+                { label: 'Aperture Blades', key: 'aperture_blades' },
+                { group: 'Features & Build' },
+                { label: 'Image Stabilization', key: 'has_image_stabilization', format: v => v ? 'Yes' : 'No' },
+                { label: 'IS Stops', key: 'stabilization_stops', format: v => v ? `${v} stops` : '—' },
+                { label: 'Weather Sealed', key: 'is_weather_sealed', format: v => v ? 'Yes' : 'No' },
+                { label: 'Autofocus', key: 'autofocus_type' },
+                { group: 'Physical & Optical' },
+                { label: 'Weight', key: 'weight_g', format: v => v ? `${v}g` : '—' },
+                { label: 'Length', key: 'length_mm', format: v => v ? `${v}mm` : '—' },
+                { label: 'Filter Size', key: 'filter_diameter_mm', format: v => v ? `${v}mm` : '—' },
+                { label: 'Min Focus Distance', key: 'min_focus_distance_cm', format: v => v ? `${v}cm` : '—' }
+            ];
+            
+            let html = '<table class="compare-table"><thead><tr>';
+            html += '<th>Specification</th>';
+            
+            items.forEach(item => {
+                html += `
+                    <th>
+                        <div class="compare-product-header">
+                            <img src="${item.image_url || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2ZmZmZmZiIvPjwvc3ZnPg=='}" 
+                                 alt="${item.model_name}">
+                            <div class="compare-product-brand">${item.brand}</div>
+                            <div class="compare-product-name">${item.model_name}</div>
+                        </div>
+                    </th>
+                `;
+            });
+            
+            html += '</tr></thead><tbody>';
+            
+            specs.forEach(spec => {
+                if (spec.group) {
+                    html += `<tr><th class="spec-group-header" colspan="${items.length + 1}">${spec.group}</th></tr>`;
+                    return;
+                }
+                
+                html += `<tr><th>${spec.label}</th>`;
+                
+                items.forEach(item => {
+                    const value = item[spec.key];
+                    const formattedValue = spec.format ? spec.format(value, item) : (value ?? '—');
+                    html += `<td>${formattedValue}</td>`;
+                });
+                
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            return html;
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeCompareModal();
+            }
+        });
+        
+        // Initialize comparison feature
+        setupCompareDropzone();
+        
+        // Make cards draggable after rendering
+        const originalRenderProducts = renderProducts;
+        renderProducts = function() {
+            originalRenderProducts();
+            makeCardsDraggable();
+        };
+        
+        // Compare button click handler
+        document.getElementById('compare-btn')?.addEventListener('click', openCompareModal);
+        
+        // ============ END COMPARISON FEATURE ============
+        
     </script>
+    
+        <!-- Comparison Modal -->
+    <div class="compare-modal" id="compare-modal">
+        <div class="compare-modal-overlay" onclick="closeCompareModal()"></div>
+        <div class="compare-modal-content">
+            <div class="compare-modal-header">
+                <h2 id="compare-modal-title">Comparing Items</h2>
+                <button class="compare-modal-close" onclick="closeCompareModal()">×</button>
+            </div>
+            <div class="compare-modal-body" id="compare-modal-body"></div>
+        </div>
+    </div>
 </body>
 </html>

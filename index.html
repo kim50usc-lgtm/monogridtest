@@ -345,6 +345,33 @@
         .compare-modal-body {
             padding: 1.5rem;
         }
+
+        .compare-btn {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .compare-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .compare-btn:not(:disabled):hover {
+            background: var(--bg-primary);
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
         
         /* ============ END COMPARISON STYLES ============ */
 

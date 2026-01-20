@@ -185,7 +185,6 @@
 
         /* ============ COMPARISON FEATURE STYLES ============ */
 
-        <style>
         /* Updated Compare Cart Styles */
         .compare-cart {
             margin-bottom: 1.5rem;
@@ -346,7 +345,6 @@
         .compare-modal-body {
             padding: 1.5rem;
         }
-        </style>
         
         /* ============ END COMPARISON STYLES ============ */
 
@@ -3263,11 +3261,11 @@
             updateCompareCart();
         }
         
-        // Remove from compare cart
-        function removeFromCompareCart(itemId, itemType) {
+        // Remove from compare cart - make globally accessible
+        window.removeFromCompareCart = function(itemId, itemType) {
             compareCart = compareCart.filter(item => !(item.id === itemId && item.type === itemType));
             updateCompareCart();
-        }
+        };
         
         // Update compare cart display
         function updateCompareCart() {
@@ -3327,10 +3325,10 @@
             document.getElementById('compare-modal').classList.add('show');
         }
         
-        // Close comparison modal
-        function closeCompareModal() {
+        // Close comparison modal - make globally accessible
+        window.closeCompareModal = function() {
             document.getElementById('compare-modal').classList.remove('show');
-        }
+        };
         
         // Build comparison table
         function buildComparisonTable(items) {

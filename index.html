@@ -435,12 +435,13 @@
 .compare-modal-header {
     position: relative;
     background: white;
-    padding: 1.5rem 1.5rem 1rem 1.5rem;
+    padding: 0;
+    height: 0;
     z-index: 1002;
 }
 
 .compare-modal-close {
-    position: fixed;
+    position: absolute;
     top: 1rem;
     right: 1rem;
     width: 32px;
@@ -2062,8 +2063,8 @@
             filters.ibis.clear();
             filters.priceMin = 0;
             filters.priceMax = 10000;
-            filters.focalMin = 3;
-            filters.focalMax = 1200;
+            filters.focalMin = 5;
+            filters.focalMax = 600;
             document.getElementById('search-input').value = '';
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             

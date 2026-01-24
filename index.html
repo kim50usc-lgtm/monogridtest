@@ -63,12 +63,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 3px;
+            font-family: 'IBM Plex Mono', monospace;
         }
         
         .password-title img {
-            width: 32px;
-            height: 32px;
+            width: 120px;
+            height: auto;
             object-fit: contain;
         }
 
@@ -174,12 +175,13 @@
             letter-spacing: -0.01em;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 3px;
+            font-family: 'IBM Plex Mono', monospace;
         }
         
         .logo img {
-            width: 24px;
-            height: 24px;
+            width: 80px;
+            height: auto;
             object-fit: contain;
         }
 
@@ -202,16 +204,17 @@
         .mobile-logo {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 3px;
             font-size: 1.1rem;
             font-weight: 400;
             letter-spacing: -0.01em;
             color: var(--text-primary);
+            font-family: 'IBM Plex Mono', monospace;
         }
         
         .mobile-logo img {
-            width: 20px;
-            height: 20px;
+            width: 70px;
+            height: auto;
             object-fit: contain;
         }
         /* Mobile menu toggle */
@@ -253,15 +256,22 @@
             transform: rotate(-45deg) translate(7px, -7px);
         }
 
-        .logout-btn {
+        .action-buttons {
             margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
             padding: 0.5rem 0;
             font-size: 0.7rem;
             font-weight: 400;
             background: transparent;
             color: var(--text-muted);
             border: none;
-            border-top: 1px solid var(--border);
             cursor: pointer;
             font-family: inherit;
             text-transform: uppercase;
@@ -269,10 +279,9 @@
             transition: color 0.2s;
             width: 100%;
             text-align: left;
-            padding-top: 1rem;
         }
 
-        .logout-btn:hover {
+        .action-btn:hover {
             color: var(--text-primary);
         }
         
@@ -1448,8 +1457,7 @@
     <div id="password-screen">
         <div class="password-container">
             <h1 class="password-title">
-                <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1766165802/f9539356-eefc-4ae6-9cfd-efa3f87f68d0_xgpbkq.jpg" alt="monogrid logo">
-                ndex
+                <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1769281180/ndex_logo_n0ykzf.svg" alt="ndex logo">
             </h1>
             <form class="password-form" id="password-form">
                 <input 
@@ -1471,8 +1479,7 @@
             <!-- Mobile header bar -->
             <div class="mobile-header">
                 <div class="mobile-logo">
-                    <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1766165802/f9539356-eefc-4ae6-9cfd-efa3f87f68d0_xgpbkq.jpg" alt="monogrid logo">
-                    <span>ndex</span>
+                    <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1769281180/ndex_logo_n0ykzf.svg" alt="ndex logo">
                 </div>
                 <button class="mobile-menu-toggle" id="mobile-menu-toggle">
                     <span></span>
@@ -1487,8 +1494,7 @@
             <!-- Sidebar -->
             <aside class="sidebar">
                 <div class="logo">
-                    <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1766165802/f9539356-eefc-4ae6-9cfd-efa3f87f68d0_xgpbkq.jpg" alt="monogrid logo">
-                    ndex
+                    <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1769281180/ndex_logo_n0ykzf.svg" alt="ndex logo">
                 </div>
                 
                 <!-- Type Toggle -->
@@ -1556,6 +1562,20 @@
                             <div class="filter-item">
                                 <input type="checkbox" id="ibis-no" value="false" data-filter="ibis">
                                 <label for="ibis-no" class="filter-label">No</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <div class="filter-title">Weather Seal</div>
+                        <div class="filter-group" id="body-weather-filters">
+                            <div class="filter-item">
+                                <input type="checkbox" id="body-weather-yes" value="true" data-filter="weather">
+                                <label for="body-weather-yes" class="filter-label">Yes</label>
+                            </div>
+                            <div class="filter-item">
+                                <input type="checkbox" id="body-weather-no" value="false" data-filter="weather">
+                                <label for="body-weather-no" class="filter-label">No</label>
                             </div>
                         </div>
                     </div>
@@ -1668,8 +1688,11 @@
                     </div>
                 </div>
 
-                <!-- Logout -->
-                <button class="logout-btn" id="logout-btn">Logout</button>
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="action-btn donate-btn" id="donate-btn">Donate</button>
+                    <button class="action-btn feedback-btn" id="feedback-btn">Feedback</button>
+                </div>
             </aside>
             
             <!-- Main Content -->
@@ -1806,13 +1829,16 @@
             });  // <-- ADD THIS LINE (closes the form submit event listener)
 
 
-            // Logout
-            document.getElementById('logout-btn').addEventListener('click', () => {
-                sessionStorage.removeItem(PASSWORD_KEY);
-                sessionStorage.removeItem(AUTH_TIME_KEY);
-                // NEW: Also clear view type preference on logout
-                localStorage.removeItem('monogrid_view_type');
-                location.reload();
+            // Donate button
+            document.getElementById('donate-btn').addEventListener('click', () => {
+                // Open donation page - you can replace this URL with your actual donation link
+                window.open('https://donate.stripe.com/your-donation-link', '_blank');
+            });
+
+            // Feedback button
+            document.getElementById('feedback-btn').addEventListener('click', () => {
+                // Open feedback form - you can replace this with your actual feedback form URL
+                window.open('https://forms.gle/your-feedback-form', '_blank');
             });
 
             async function initApp() {
@@ -1823,8 +1849,8 @@
                 setupTypeToggle();
                 setupFilters();  // Set up filters AFTER data is loaded
                 
-                // Restore saved view type
-                const savedViewType = localStorage.getItem('monogrid_view_type');
+                // Restore saved view type (only persists during browser session)
+                const savedViewType = sessionStorage.getItem('monogrid_view_type');
                 
                 if (savedViewType === 'lens' && allLenses.length > 0) {
                     console.log('📍 Restoring lens view...');
@@ -1992,8 +2018,8 @@
                 clearFilters();
                 renderProducts();
                 
-                // NEW: Save selection to localStorage
-                localStorage.setItem('monogrid_view_type', 'body');
+                // Save selection to sessionStorage (only persists during browser session)
+                sessionStorage.setItem('monogrid_view_type', 'body');
             });
         
             lensBtn.addEventListener('click', () => {
@@ -2009,8 +2035,8 @@
                 renderProducts();
                 console.log('  renderProducts() called for lenses');
                 
-                // NEW: Save selection to localStorage
-                localStorage.setItem('monogrid_view_type', 'lens');
+                // Save selection to sessionStorage (only persists during browser session)
+                sessionStorage.setItem('monogrid_view_type', 'lens');
             });
         }
 
@@ -2231,12 +2257,30 @@
                 
                 // IBIS filter
                 if (filters.ibis.size > 0) {
-                    const hasIbis = camera.has_ibis === true || camera.has_ibis === 'true';
                     const wantsIbis = filters.ibis.has('true');
                     const wantsNoIbis = filters.ibis.has('false');
                     
-                    if (wantsIbis && !hasIbis) return false;
-                    if (wantsNoIbis && hasIbis) return false;
+                    // If both are checked, show all cameras (skip filter)
+                    if (!(wantsIbis && wantsNoIbis)) {
+                        const hasIbis = camera.has_ibis === true || camera.has_ibis === 'true';
+                        
+                        if (wantsIbis && !hasIbis) return false;
+                        if (wantsNoIbis && hasIbis) return false;
+                    }
+                }
+                
+                // Weather Seal filter
+                if (filters.weather.size > 0) {
+                    const wantsWeather = filters.weather.has('true');
+                    const wantsNoWeather = filters.weather.has('false');
+                    
+                    // If both are checked, show all cameras (skip filter)
+                    if (!(wantsWeather && wantsNoWeather)) {
+                        const hasWeather = camera.environmentally_sealed === true || camera.environmentally_sealed === 'true';
+                        
+                        if (wantsWeather && !hasWeather) return false;
+                        if (wantsNoWeather && hasWeather) return false;
+                    }
                 }
                 
                 // Price filter
@@ -2359,12 +2403,30 @@
                     
                     // IBIS filter
                     if (filters.ibis.size > 0) {
-                        const hasIbis = camera.has_ibis === true || camera.has_ibis === 'true';
                         const wantsIbis = filters.ibis.has('true');
                         const wantsNoIbis = filters.ibis.has('false');
                         
-                        if (wantsIbis && !hasIbis) return false;
-                        if (wantsNoIbis && hasIbis) return false;
+                        // If both are checked, show all cameras (skip filter)
+                        if (!(wantsIbis && wantsNoIbis)) {
+                            const hasIbis = camera.has_ibis === true || camera.has_ibis === 'true';
+                            
+                            if (wantsIbis && !hasIbis) return false;
+                            if (wantsNoIbis && hasIbis) return false;
+                        }
+                    }
+                    
+                    // Weather Seal filter
+                    if (filters.weather.size > 0) {
+                        const wantsWeather = filters.weather.has('true');
+                        const wantsNoWeather = filters.weather.has('false');
+                        
+                        // If both are checked, show all cameras (skip filter)
+                        if (!(wantsWeather && wantsNoWeather)) {
+                            const hasWeather = camera.environmentally_sealed === true || camera.environmentally_sealed === 'true';
+                            
+                            if (wantsWeather && !hasWeather) return false;
+                            if (wantsNoWeather && hasWeather) return false;
+                        }
                     }
                     
                     // Price filter
@@ -2481,22 +2543,30 @@
                 
                 // Weather sealing filter
                 if (filters.weather.size > 0) {
-                    const hasWeather = lens.is_weather_sealed === true;
                     const wantsWeather = filters.weather.has('true');
                     const wantsNoWeather = filters.weather.has('false');
                     
-                    if (wantsWeather && !hasWeather) return false;
-                    if (wantsNoWeather && hasWeather) return false;
+                    // If both are checked, show all lenses (skip filter)
+                    if (!(wantsWeather && wantsNoWeather)) {
+                        const hasWeather = lens.is_weather_sealed === true;
+                        
+                        if (wantsWeather && !hasWeather) return false;
+                        if (wantsNoWeather && hasWeather) return false;
+                    }
                 }
                 
                 // Image stabilization filter
                 if (filters.is.size > 0) {
-                    const hasIS = lens.has_image_stabilization === true;
                     const wantsIS = filters.is.has('true');
                     const wantsNoIS = filters.is.has('false');
                     
-                    if (wantsIS && !hasIS) return false;
-                    if (wantsNoIS && hasIS) return false;
+                    // If both are checked, show all lenses (skip filter)
+                    if (!(wantsIS && wantsNoIS)) {
+                        const hasIS = lens.has_image_stabilization === true;
+                        
+                        if (wantsIS && !hasIS) return false;
+                        if (wantsNoIS && hasIS) return false;
+                    }
                 }
                 
                 // Focal length filter
@@ -2768,12 +2838,30 @@
 
                 // IBIS (body only)
                 if (currentType === 'body' && filters.ibis.size > 0) {
-                    const hasIbis = item.has_ibis === true;
                     const wantsIbis = filters.ibis.has('true');
                     const wantsNoIbis = filters.ibis.has('false');
                     
-                    if (wantsIbis && !hasIbis) return false;
-                    if (wantsNoIbis && hasIbis) return false;
+                    // If both are checked, show all cameras (skip filter)
+                    if (!(wantsIbis && wantsNoIbis)) {
+                        const hasIbis = item.has_ibis === true;
+                        
+                        if (wantsIbis && !hasIbis) return false;
+                        if (wantsNoIbis && hasIbis) return false;
+                    }
+                }
+
+                // Weather Seal (body only)
+                if (currentType === 'body' && filters.weather.size > 0) {
+                    const wantsWeather = filters.weather.has('true');
+                    const wantsNoWeather = filters.weather.has('false');
+                    
+                    // If both are checked, show all cameras (skip filter)
+                    if (!(wantsWeather && wantsNoWeather)) {
+                        const hasWeather = item.environmentally_sealed === true;
+                        
+                        if (wantsWeather && !hasWeather) return false;
+                        if (wantsNoWeather && hasWeather) return false;
+                    }
                 }
 
                 if (currentType === 'body') {
@@ -2800,16 +2888,20 @@
                     const wantsZoom = filters.lensTypes.has('Zoom');
                     const wantsTeleconverter = filters.lensTypes.has('Teleconverter');
                     
-                    // If all are checked, show all lenses (skip filter)
+                    // If all three are checked, show all lenses (skip filter)
                     if (!(wantsPrime && wantsZoom && wantsTeleconverter)) {
                         const lensType = item.lens_type ? item.lens_type.toLowerCase() : '';
                         const isPrime = lensType.includes('prime');
                         const isZoom = lensType.includes('zoom');
                         const isTeleconverter = lensType.includes('teleconverter');
                         
-                        if (wantsPrime && !isPrime) return false;
-                        if (wantsZoom && !isZoom) return false;
-                        if (wantsTeleconverter && !isTeleconverter) return false;
+                        // Show lens if it matches ANY of the selected types
+                        const matchesFilter = 
+                            (wantsPrime && isPrime) ||
+                            (wantsZoom && isZoom) ||
+                            (wantsTeleconverter && isTeleconverter);
+                        
+                        if (!matchesFilter) return false;
                     }
                 }
 
@@ -2924,14 +3016,14 @@
                     
                     case 'aperture-asc':
                         // Aperture: Wide to Narrow (smaller f-number = wider, lens only)
-                        const apertureA = parseAperture(a.max_aperture);
-                        const apertureB = parseAperture(b.max_aperture);
+                        const apertureA = a.max_aperture_min || 999;
+                        const apertureB = b.max_aperture_min || 999;
                         return apertureA - apertureB;
                     
                     case 'aperture-desc':
                         // Aperture: Narrow to Wide (larger f-number = narrower, lens only)
-                        const apertureA2 = parseAperture(a.max_aperture);
-                        const apertureB2 = parseAperture(b.max_aperture);
+                        const apertureA2 = a.max_aperture_min || 0;
+                        const apertureB2 = b.max_aperture_min || 0;
                         return apertureB2 - apertureA2;
                     
                     default:

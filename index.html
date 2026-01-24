@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>monogrid</title>
+    <title>ndex</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
     /* the title and all other "monogrid" instances should be upadated to "ndex" or "ndex.info" */    
@@ -63,12 +63,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 3px;
+            font-family: 'IBM Plex Mono', monospace;
         }
         
         .password-title img {
-            width: 32px;
-            height: 32px;
+            width: 120px;
+            height: auto;
             object-fit: contain;
         }
 
@@ -174,356 +175,15 @@
             letter-spacing: -0.01em;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 3px;
+            font-family: 'IBM Plex Mono', monospace;
         }
         
         .logo img {
-            width: 24px;
-            height: 24px;
+            width: 80px;
+            height: auto;
             object-fit: contain;
         }
-
-        /* ============ COMPARISON FEATURE STYLES ============ */
-
-        /* Updated Compare Cart Styles */
-        .compare-cart {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .compare-cart-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            margin-bottom: 0.75rem;
-        }
-        
-        .compare-cart-dropzone {
-            min-height: 60px;
-            border: 1px dashed var(--border);
-            border-radius: 4px;
-            padding: 0.5rem;
-            margin-bottom: 0.75rem;
-            transition: all 0.2s ease;
-        }
-        
-        .compare-cart-dropzone.drag-over {
-            background: var(--bg-primary);
-            border-color: var(--accent);
-        }
-             
-        /* Empty state - just show message */
-        .compare-cart-empty {
-            padding: 1rem;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
-        
-        /* When items exist - show as horizontal row */
-        .compare-cart-items {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .compare-cart-item {
-            position: relative;
-            width: 50px;
-            height: 50px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-            background: white;
-        }
-        
-        .compare-cart-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            padding: 4px;
-        }
-        
-        .compare-cart-item-remove {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            width: 18px;
-            height: 18px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 12px;
-            line-height: 1;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            transition: background 0.2s ease;
-        }
-        
-        .compare-cart-item-remove:hover {
-            background: rgba(0, 0, 0, 0.9);
-        }
-        
-        .compare-btn {
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 400;
-            color: var(--text-secondary);
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .compare-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-        
-        .compare-btn:not(:disabled):hover {
-            background: var(--bg-primary);
-            border-color: var(--text-secondary);
-            color: var(--text-primary);
-        }
-        
-        /* Modal close button - ensure it's clickable */
-        .compare-modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            width: 32px;
-            height: 32px;
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 24px;
-            line-height: 1;
-            cursor: pointer;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            z-index: 1001;
-        }
-        
-        .compare-modal-close:hover {
-            background: var(--bg-primary);
-            border-color: var(--accent);
-        }
-        
-        /* Ensure modal is properly styled */
-        .compare-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 1000;
-        }
-        
-        .compare-modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .compare-modal-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
-        
-        .compare-modal-content {
-            position: relative;
-            background: white;
-            max-width: 90vw;
-            max-height: 85vh;
-            overflow: auto;
-            border-radius: 8px;
-            z-index: 1001;
-        }
-        
-        .compare-modal-header {
-            position: sticky;
-            top: 0;
-            background: white;
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            z-index: 1002;
-        }
-        
-        .compare-modal-body {
-            padding: 1.5rem;
-        }
-        
-        /* Comparison Table Styles */
-        .compare-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-        
-        .compare-table thead th {
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 10;
-            padding: 1.5rem 1rem;
-            border-bottom: 1px solid var(--border);
-            vertical-align: top;
-        }
-        
-        .compare-table thead th:first-child {
-            text-align: left;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-secondary);
-            width: 180px;
-            min-width: 180px;
-        }
-        
-        /* Product header in table */
-        .compare-product-header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .compare-product-header img {
-            width: 120px;
-            height: 120px;
-            object-fit: contain;
-            background: var(--bg-primary);
-            padding: 0.5rem;
-            border-radius: 4px;
-        }
-        
-        .compare-product-brand {
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-secondary);
-        }
-        
-        .compare-product-name {
-            font-size: 0.9rem;
-            font-weight: 400;
-            color: var(--text-primary);
-            text-align: center;
-        }
-        
-        /* Spec group headers */
-        .compare-table .spec-group-header {
-            background: var(--bg-primary);
-            padding: 0.75rem 1rem;
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-secondary);
-            text-align: left;
-            border-top: 1px solid var(--border);
-        }
-        
-        /* Table body rows */
-        .compare-table tbody tr {
-            border-bottom: 1px solid #f5f5f5;
-        }
-        
-        .compare-table tbody tr:hover {
-            background: #fafafa;
-        }
-        
-        .compare-table tbody th {
-            text-align: left;
-            padding: 0.75rem 1rem;
-            font-size: 0.75rem;
-            font-weight: 400;
-            color: var(--text-secondary);
-            width: 180px;
-            min-width: 180px;
-            border-right: 1px solid #f5f5f5;
-        }
-        
-        .compare-table tbody td {
-            padding: 0.75rem 1rem;
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.8rem;
-            font-weight: 400;
-            color: var(--text-primary);
-            text-align: center;
-        }
-        
-        /* Make first column (specs) sticky on scroll */
-        .compare-table th:first-child,
-        .compare-table td:first-child {
-            position: sticky;
-            left: 0;
-            background: white;
-            z-index: 5;
-        }
-        
-        .compare-table tbody tr:hover th:first-child,
-        .compare-table tbody tr:hover td:first-child {
-            background: #fafafa;
-        }
-        
-        /* Responsive table on mobile */
-        @media (max-width: 768px) {
-            .compare-modal-content {
-                max-width: 95vw;
-                max-height: 90vh;
-            }
-            
-            .compare-table thead th:first-child,
-            .compare-table tbody th {
-                width: 120px;
-                min-width: 120px;
-                font-size: 0.65rem;
-            }
-            
-            .compare-table tbody td {
-                font-size: 0.7rem;
-                padding: 0.5rem;
-            }
-            
-            .compare-product-header img {
-                width: 80px;
-                height: 80px;
-            }
-            
-            .compare-product-name {
-                font-size: 0.75rem;
-            }
-            
-            .compare-product-brand {
-                font-size: 0.6rem;
-            }
-        }
-        
-        /* ============ END COMPARISON STYLES ============ */
 
        /* Mobile header bar */
         .mobile-header {
@@ -544,16 +204,17 @@
         .mobile-logo {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 3px;
             font-size: 1.1rem;
             font-weight: 400;
             letter-spacing: -0.01em;
             color: var(--text-primary);
+            font-family: 'IBM Plex Mono', monospace;
         }
         
         .mobile-logo img {
-            width: 20px;
-            height: 20px;
+            width: 70px;
+            height: auto;
             object-fit: contain;
         }
         /* Mobile menu toggle */
@@ -595,15 +256,22 @@
             transform: rotate(-45deg) translate(7px, -7px);
         }
 
-        .logout-btn {
+        .action-buttons {
             margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
             padding: 0.5rem 0;
             font-size: 0.7rem;
             font-weight: 400;
             background: transparent;
             color: var(--text-muted);
             border: none;
-            border-top: 1px solid var(--border);
             cursor: pointer;
             font-family: inherit;
             text-transform: uppercase;
@@ -611,10 +279,9 @@
             transition: color 0.2s;
             width: 100%;
             text-align: left;
-            padding-top: 1rem;
         }
 
-        .logout-btn:hover {
+        .action-btn:hover {
             color: var(--text-primary);
         }
         
@@ -1485,8 +1152,7 @@
     <div id="password-screen">
         <div class="password-container">
             <h1 class="password-title">
-                <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1766165802/f9539356-eefc-4ae6-9cfd-efa3f87f68d0_xgpbkq.jpg" alt="monogrid logo">
-                monogrid
+                <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1769281180/ndex_logo_n0ykzf.svg" alt="ndex logo">
             </h1>
             <form class="password-form" id="password-form">
                 <input 
@@ -1508,8 +1174,7 @@
             <!-- Mobile header bar -->
             <div class="mobile-header">
                 <div class="mobile-logo">
-                    <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1766165802/f9539356-eefc-4ae6-9cfd-efa3f87f68d0_xgpbkq.jpg" alt="monogrid logo">
-                    <span>monogrid</span>
+                    <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1769281180/ndex_logo_n0ykzf.svg" alt="ndex logo">
                 </div>
                 <button class="mobile-menu-toggle" id="mobile-menu-toggle">
                     <span></span>
@@ -1524,8 +1189,7 @@
             <!-- Sidebar -->
             <aside class="sidebar">
                 <div class="logo">
-                    <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1766165802/f9539356-eefc-4ae6-9cfd-efa3f87f68d0_xgpbkq.jpg" alt="monogrid logo">
-                    monogrid
+                    <img src="https://res.cloudinary.com/dwwyok54f/image/upload/v1769281180/ndex_logo_n0ykzf.svg" alt="ndex logo">
                 </div>
                 
                 <!-- Type Toggle -->
@@ -1533,21 +1197,6 @@
                     <button class="type-btn active" id="body-btn" data-type="body">Body</button>
                     <button class="type-btn" id="lens-btn" data-type="lens">Lens</button>
                 </div>
-
-                 <!-- Compare Cart -->
-                <div class="compare-cart">
-                <div class="compare-cart-dropzone" id="compare-dropzone">
-                    <!-- Empty state shown when no items -->
-                    <div class="compare-cart-empty" id="compare-cart-empty">
-                         
-                    </div>
-                    <!-- Items container (hidden when empty) -->
-                    <div class="compare-cart-items" id="compare-cart-items" style="display: none;"></div>
-                </div>
-                <button class="compare-btn" id="compare-btn" disabled>
-                    Compare
-                </button>
-            </div>
                 
                 <!-- Search -->
                 <div class="search-box">
@@ -1594,6 +1243,20 @@
                             <div class="filter-item">
                                 <input type="checkbox" id="ibis-no" value="false" data-filter="ibis">
                                 <label for="ibis-no" class="filter-label">No</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <div class="filter-title">Weather Seal</div>
+                        <div class="filter-group" id="body-weather-filters">
+                            <div class="filter-item">
+                                <input type="checkbox" id="body-weather-yes" value="true" data-filter="weather">
+                                <label for="body-weather-yes" class="filter-label">Yes</label>
+                            </div>
+                            <div class="filter-item">
+                                <input type="checkbox" id="body-weather-no" value="false" data-filter="weather">
+                                <label for="body-weather-no" class="filter-label">No</label>
                             </div>
                         </div>
                     </div>
@@ -1706,8 +1369,11 @@
                     </div>
                 </div>
 
-                <!-- Logout -->
-                <button class="logout-btn" id="logout-btn">Logout</button>
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="action-btn donate-btn" id="donate-btn">Donate</button>
+                    <button class="action-btn feedback-btn" id="feedback-btn">Feedback</button>
+                </div>
             </aside>
             
             <!-- Main Content -->
@@ -1842,13 +1508,16 @@
             });  // <-- ADD THIS LINE (closes the form submit event listener)
 
 
-            // Logout
-            document.getElementById('logout-btn').addEventListener('click', () => {
-                sessionStorage.removeItem(PASSWORD_KEY);
-                sessionStorage.removeItem(AUTH_TIME_KEY);
-                // NEW: Also clear view type preference on logout
-                localStorage.removeItem('monogrid_view_type');
-                location.reload();
+            // Donate button
+            document.getElementById('donate-btn').addEventListener('click', () => {
+                // Open donation page - you can replace this URL with your actual donation link
+                window.open('https://donate.stripe.com/your-donation-link', '_blank');
+            });
+
+            // Feedback button
+            document.getElementById('feedback-btn').addEventListener('click', () => {
+                // Open feedback form - you can replace this with your actual feedback form URL
+                window.open('https://forms.gle/your-feedback-form', '_blank');
             });
 
             async function initApp() {
@@ -1859,8 +1528,8 @@
                 setupTypeToggle();
                 setupFilters();  // Set up filters AFTER data is loaded
                 
-                // Restore saved view type
-                const savedViewType = localStorage.getItem('monogrid_view_type');
+                // Restore saved view type (only persists during browser session)
+                const savedViewType = sessionStorage.getItem('monogrid_view_type');
                 
                 if (savedViewType === 'lens' && allLenses.length > 0) {
                     console.log('📍 Restoring lens view...');
@@ -2027,8 +1696,8 @@
                 clearFilters();
                 renderProducts();
                 
-                // NEW: Save selection to localStorage
-                localStorage.setItem('monogrid_view_type', 'body');
+                // Save selection to sessionStorage (only persists during browser session)
+                sessionStorage.setItem('monogrid_view_type', 'body');
             });
         
             lensBtn.addEventListener('click', () => {
@@ -2043,8 +1712,8 @@
                 renderProducts();
                 console.log('  renderProducts() called for lenses');
                 
-                // NEW: Save selection to localStorage
-                localStorage.setItem('monogrid_view_type', 'lens');
+                // Save selection to sessionStorage (only persists during browser session)
+                sessionStorage.setItem('monogrid_view_type', 'lens');
             });
         }
 
@@ -2265,12 +1934,30 @@
                 
                 // IBIS filter
                 if (filters.ibis.size > 0) {
-                    const hasIbis = camera.has_ibis === true || camera.has_ibis === 'true';
                     const wantsIbis = filters.ibis.has('true');
                     const wantsNoIbis = filters.ibis.has('false');
                     
-                    if (wantsIbis && !hasIbis) return false;
-                    if (wantsNoIbis && hasIbis) return false;
+                    // If both are checked, show all cameras (skip filter)
+                    if (!(wantsIbis && wantsNoIbis)) {
+                        const hasIbis = camera.has_ibis === true || camera.has_ibis === 'true';
+                        
+                        if (wantsIbis && !hasIbis) return false;
+                        if (wantsNoIbis && hasIbis) return false;
+                    }
+                }
+                
+                // Weather Seal filter
+                if (filters.weather.size > 0) {
+                    const wantsWeather = filters.weather.has('true');
+                    const wantsNoWeather = filters.weather.has('false');
+                    
+                    // If both are checked, show all cameras (skip filter)
+                    if (!(wantsWeather && wantsNoWeather)) {
+                        const hasWeather = camera.environmentally_sealed === true || camera.environmentally_sealed === 'true';
+                        
+                        if (wantsWeather && !hasWeather) return false;
+                        if (wantsNoWeather && hasWeather) return false;
+                    }
                 }
                 
                 // Price filter
@@ -2393,12 +2080,30 @@
                     
                     // IBIS filter
                     if (filters.ibis.size > 0) {
-                        const hasIbis = camera.has_ibis === true || camera.has_ibis === 'true';
                         const wantsIbis = filters.ibis.has('true');
                         const wantsNoIbis = filters.ibis.has('false');
                         
-                        if (wantsIbis && !hasIbis) return false;
-                        if (wantsNoIbis && hasIbis) return false;
+                        // If both are checked, show all cameras (skip filter)
+                        if (!(wantsIbis && wantsNoIbis)) {
+                            const hasIbis = camera.has_ibis === true || camera.has_ibis === 'true';
+                            
+                            if (wantsIbis && !hasIbis) return false;
+                            if (wantsNoIbis && hasIbis) return false;
+                        }
+                    }
+                    
+                    // Weather Seal filter
+                    if (filters.weather.size > 0) {
+                        const wantsWeather = filters.weather.has('true');
+                        const wantsNoWeather = filters.weather.has('false');
+                        
+                        // If both are checked, show all cameras (skip filter)
+                        if (!(wantsWeather && wantsNoWeather)) {
+                            const hasWeather = camera.environmentally_sealed === true || camera.environmentally_sealed === 'true';
+                            
+                            if (wantsWeather && !hasWeather) return false;
+                            if (wantsNoWeather && hasWeather) return false;
+                        }
                     }
                     
                     // Price filter
@@ -2515,22 +2220,30 @@
                 
                 // Weather sealing filter
                 if (filters.weather.size > 0) {
-                    const hasWeather = lens.is_weather_sealed === true;
                     const wantsWeather = filters.weather.has('true');
                     const wantsNoWeather = filters.weather.has('false');
                     
-                    if (wantsWeather && !hasWeather) return false;
-                    if (wantsNoWeather && hasWeather) return false;
+                    // If both are checked, show all lenses (skip filter)
+                    if (!(wantsWeather && wantsNoWeather)) {
+                        const hasWeather = lens.is_weather_sealed === true;
+                        
+                        if (wantsWeather && !hasWeather) return false;
+                        if (wantsNoWeather && hasWeather) return false;
+                    }
                 }
                 
                 // Image stabilization filter
                 if (filters.is.size > 0) {
-                    const hasIS = lens.has_image_stabilization === true;
                     const wantsIS = filters.is.has('true');
                     const wantsNoIS = filters.is.has('false');
                     
-                    if (wantsIS && !hasIS) return false;
-                    if (wantsNoIS && hasIS) return false;
+                    // If both are checked, show all lenses (skip filter)
+                    if (!(wantsIS && wantsNoIS)) {
+                        const hasIS = lens.has_image_stabilization === true;
+                        
+                        if (wantsIS && !hasIS) return false;
+                        if (wantsNoIS && hasIS) return false;
+                    }
                 }
                 
                 // Focal length filter
@@ -2802,12 +2515,30 @@
 
                 // IBIS (body only)
                 if (currentType === 'body' && filters.ibis.size > 0) {
-                    const hasIbis = item.has_ibis === true;
                     const wantsIbis = filters.ibis.has('true');
                     const wantsNoIbis = filters.ibis.has('false');
                     
-                    if (wantsIbis && !hasIbis) return false;
-                    if (wantsNoIbis && hasIbis) return false;
+                    // If both are checked, show all cameras (skip filter)
+                    if (!(wantsIbis && wantsNoIbis)) {
+                        const hasIbis = item.has_ibis === true;
+                        
+                        if (wantsIbis && !hasIbis) return false;
+                        if (wantsNoIbis && hasIbis) return false;
+                    }
+                }
+
+                // Weather Seal (body only)
+                if (currentType === 'body' && filters.weather.size > 0) {
+                    const wantsWeather = filters.weather.has('true');
+                    const wantsNoWeather = filters.weather.has('false');
+                    
+                    // If both are checked, show all cameras (skip filter)
+                    if (!(wantsWeather && wantsNoWeather)) {
+                        const hasWeather = item.environmentally_sealed === true;
+                        
+                        if (wantsWeather && !hasWeather) return false;
+                        if (wantsNoWeather && hasWeather) return false;
+                    }
                 }
 
                 if (currentType === 'body') {
@@ -2834,16 +2565,20 @@
                     const wantsZoom = filters.lensTypes.has('Zoom');
                     const wantsTeleconverter = filters.lensTypes.has('Teleconverter');
                     
-                    // If all are checked, show all lenses (skip filter)
+                    // If all three are checked, show all lenses (skip filter)
                     if (!(wantsPrime && wantsZoom && wantsTeleconverter)) {
                         const lensType = item.lens_type ? item.lens_type.toLowerCase() : '';
                         const isPrime = lensType.includes('prime');
                         const isZoom = lensType.includes('zoom');
                         const isTeleconverter = lensType.includes('teleconverter');
                         
-                        if (wantsPrime && !isPrime) return false;
-                        if (wantsZoom && !isZoom) return false;
-                        if (wantsTeleconverter && !isTeleconverter) return false;
+                        // Show lens if it matches ANY of the selected types
+                        const matchesFilter = 
+                            (wantsPrime && isPrime) ||
+                            (wantsZoom && isZoom) ||
+                            (wantsTeleconverter && isTeleconverter);
+                        
+                        if (!matchesFilter) return false;
                     }
                 }
 
@@ -2958,14 +2693,14 @@
                     
                     case 'aperture-asc':
                         // Aperture: Wide to Narrow (smaller f-number = wider, lens only)
-                        const apertureA = parseAperture(a.max_aperture);
-                        const apertureB = parseAperture(b.max_aperture);
+                        const apertureA = a.max_aperture_min || 999;
+                        const apertureB = b.max_aperture_min || 999;
                         return apertureA - apertureB;
                     
                     case 'aperture-desc':
                         // Aperture: Narrow to Wide (larger f-number = narrower, lens only)
-                        const apertureA2 = parseAperture(a.max_aperture);
-                        const apertureB2 = parseAperture(b.max_aperture);
+                        const apertureA2 = a.max_aperture_min || 0;
+                        const apertureB2 = b.max_aperture_min || 0;
                         return apertureB2 - apertureA2;
                     
                     default:
@@ -2988,9 +2723,6 @@
             }
 
 
-            // Store filtered items globally for drag-and-drop
-            currentFilteredItems = filtered;
-            
             // Render
             grid.innerHTML = filtered.map((item, i) => {
                 let specs = '';
@@ -3343,294 +3075,7 @@
             }, 150);
         }
         
-        // ============ COMPARISON FEATURE ============
-        
-        let compareCart = [];
-        
-        // Store filtered items globally so drag handlers can access them
-        let currentFilteredItems = [];
-        
-        // Make product cards draggable
-        function makeCardsDraggable() {
-            const cards = document.querySelectorAll('.product-card');
-            
-            cards.forEach(card => {
-                card.setAttribute('draggable', 'true');
-                
-                card.addEventListener('dragstart', (e) => {
-                    card.classList.add('dragging');
-                    e.dataTransfer.effectAllowed = 'copy';
-                    
-                    // Get the filtered index from data-camera-id
-                    const filteredIndex = parseInt(card.dataset.cameraId);
-                    
-                    // Pass just the filtered index
-                    e.dataTransfer.setData('text/plain', filteredIndex.toString());
-                });
-                
-                card.addEventListener('dragend', () => {
-                    card.classList.remove('dragging');
-                });
-            });
-        }
-        
-        // Set up drop zone
-        function setupCompareDropzone() {
-            const dropzone = document.getElementById('compare-dropzone');
-            
-            if (!dropzone) return;
-            
-            dropzone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = 'copy';
-                dropzone.classList.add('drag-over');
-            });
-            
-            dropzone.addEventListener('dragleave', () => {
-                dropzone.classList.remove('drag-over');
-            });
-            
-            dropzone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropzone.classList.remove('drag-over');
-                
-                console.log('=== DROP EVENT ===');
-                const itemIndex = parseInt(e.dataTransfer.getData('text/plain'));
-                console.log('Item index from drag:', itemIndex);
-                console.log('currentFilteredItems length:', currentFilteredItems.length);
-                console.log('currentFilteredItems:', currentFilteredItems);
-                
-                addToCompareCart(itemIndex);
-            });
-        }
-        
-        // Add item to compare cart
-        function addToCompareCart(filteredIndex) {
-            const item = currentFilteredItems[filteredIndex];
-            
-            if (!item) {
-                console.error('Item not found at filtered index:', filteredIndex);
-                return;
-            }
-            
-            // Check if already in cart
-            if (compareCart.some(cartItem => cartItem.id === item.id && cartItem.type === currentType)) {
-                console.log('Item already in cart');
-                return;
-            }
-            
-            // Check max limit
-            if (compareCart.length >= 4) {
-                alert('You can compare up to 4 items at once');
-                return;
-            }
-            
-            // Add to cart with type info
-            compareCart.push({
-                ...item,
-                type: currentType
-            });
-            
-            console.log('Added to cart:', item.brand, item.model_name);
-            console.log('Cart now has:', compareCart.length, 'items');
-            
-            updateCompareCart();
-        }
-        
-        // Remove from compare cart - make globally accessible
-        window.removeFromCompareCart = function(itemId, itemType) {
-            compareCart = compareCart.filter(item => !(item.id === itemId && item.type === itemType));
-            updateCompareCart();
-        };
-        
-        // Update compare cart display
-        function updateCompareCart() {
-            const emptyState = document.getElementById('compare-cart-empty');
-            const itemsContainer = document.getElementById('compare-cart-items');
-            const compareBtn = document.getElementById('compare-btn');
-            
-            if (!emptyState || !itemsContainer || !compareBtn) {
-                console.error('Compare cart elements not found');
-                return;
-            }
-            
-            // Clear items container
-            itemsContainer.innerHTML = '';
-            
-            if (compareCart.length === 0) {
-                // Show empty state, hide items
-                emptyState.style.display = 'block';
-                itemsContainer.style.display = 'none';
-                compareBtn.disabled = true;
-                compareBtn.textContent = 'Compare';
-            } else {
-                // Hide empty state, show items
-                emptyState.style.display = 'none';
-                itemsContainer.style.display = 'flex';
-                
-                // Render each item
-                compareCart.forEach((item, index) => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'compare-cart-item';
-                    itemDiv.innerHTML = `
-                        <img src="${item.image_url || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2ZmZmZmZiIvPjwvc3ZnPg=='}" 
-                             alt="${item.brand} ${item.model_name}">
-                        <button class="compare-cart-item-remove" onclick="removeFromCompareCart(${item.id}, '${item.type}')" title="Remove">×</button>
-                    `;
-                    itemsContainer.appendChild(itemDiv);
-                });
-                
-                // Update button
-                compareBtn.disabled = compareCart.length < 2;
-                compareBtn.textContent = compareCart.length >= 2 
-                    ? `Compare ${compareCart.length} Items` 
-                    : 'Compare (add 1 more)';
-            }
-        }
-        
-        // Open comparison modal
-        function openCompareModal() {
-            if (compareCart.length < 2) return;
-            
-            const table = buildComparisonTable(compareCart);
-            document.getElementById('compare-modal-body').innerHTML = table;
-            
-            const itemType = compareCart[0].type === 'body' ? 'Camera Bodies' : 'Lenses';
-            document.getElementById('compare-modal-title').textContent = `Comparing ${compareCart.length} ${itemType}`;
-            
-            document.getElementById('compare-modal').classList.add('show');
-        }
-        
-        // Close comparison modal - make globally accessible
-        window.closeCompareModal = function() {
-            document.getElementById('compare-modal').classList.remove('show');
-        };
-        
-        // Build comparison table
-        function buildComparisonTable(items) {
-            const isCameraBody = items[0].type === 'body';
-            
-            const specs = isCameraBody ? [
-                { label: 'Brand', key: 'brand' },
-                { label: 'Model', key: 'model_name' },
-                { label: 'Price', key: 'msrp_usd', format: v => v ? `$${v.toLocaleString()}` : '—' },
-                { group: 'Sensor & Image' },
-                { label: 'Sensor Size', key: 'sensor_size' },
-                { label: 'Sensor Type', key: 'sensor_type' },
-                { label: 'Megapixels', key: 'megapixels', format: v => v ? `${v} MP` : '—' },
-                { label: 'ISO Range', key: 'iso_range' },
-                { group: 'Stabilization & Performance' },
-                { label: 'IBIS', key: 'has_ibis', format: v => v ? 'Yes' : 'No' },
-                { label: 'IBIS Stops', key: 'ibis_stops', format: v => v ? `${v} stops` : '—' },
-                { label: 'Continuous FPS', key: 'continuous_shooting_fps', format: v => v ? `${v} fps` : '—' },
-                { label: 'Battery Life', key: 'battery_life_shots', format: v => v ? `${v} shots` : '—' },
-                { group: 'Video & Physical' },
-                { label: 'Max Video', key: 'video_max' },
-                { label: 'Weather Sealed', key: 'environmentally_sealed', format: v => v ? 'Yes' : 'No' },
-                { label: 'Weight', key: 'weight_g', format: v => v ? `${v}g` : '—' },
-                { label: 'Dimensions', key: 'width_mm', format: (v, item) => {
-                    if (item.width_mm && item.height_mm && item.depth_mm) {
-                        return `${item.width_mm} × ${item.height_mm} × ${item.depth_mm} mm`;
-                    }
-                    return '—';
-                }}
-            ] : [
-                { label: 'Brand', key: 'brand' },
-                { label: 'Model', key: 'model_name' },
-                { label: 'Price', key: 'msrp_usd', format: v => v ? `$${v.toLocaleString()}` : '—' },
-                { group: 'Optical Specifications' },
-                { label: 'Lens Type', key: 'lens_type' },
-                { label: 'Mount', key: 'mount' },
-                { label: 'Focal Length', key: 'focal_length' },
-                { label: 'Max Aperture', key: 'max_aperture_min', format: v => v ? `f/${v}` : '—' },
-                { label: 'Aperture Blades', key: 'aperture_blades' },
-                { group: 'Features & Build' },
-                { label: 'Image Stabilization', key: 'has_image_stabilization', format: v => v ? 'Yes' : 'No' },
-                { label: 'IS Stops', key: 'stabilization_stops', format: v => v ? `${v} stops` : '—' },
-                { label: 'Weather Sealed', key: 'is_weather_sealed', format: v => v ? 'Yes' : 'No' },
-                { label: 'Autofocus', key: 'autofocus_type' },
-                { group: 'Physical & Optical' },
-                { label: 'Weight', key: 'weight_g', format: v => v ? `${v}g` : '—' },
-                { label: 'Length', key: 'length_mm', format: v => v ? `${v}mm` : '—' },
-                { label: 'Filter Size', key: 'filter_diameter_mm', format: v => v ? `${v}mm` : '—' },
-                { label: 'Min Focus Distance', key: 'min_focus_distance_cm', format: v => v ? `${v}cm` : '—' }
-            ];
-            
-            let html = '<table class="compare-table"><thead><tr>';
-            html += '<th>Specification</th>';
-            
-            items.forEach(item => {
-                html += `
-                    <th>
-                        <div class="compare-product-header">
-                            <img src="${item.image_url || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2ZmZmZmZiIvPjwvc3ZnPg=='}" 
-                                 alt="${item.model_name}">
-                            <div class="compare-product-brand">${item.brand}</div>
-                            <div class="compare-product-name">${item.model_name}</div>
-                        </div>
-                    </th>
-                `;
-            });
-            
-            html += '</tr></thead><tbody>';
-            
-            specs.forEach(spec => {
-                if (spec.group) {
-                    html += `<tr><th class="spec-group-header" colspan="${items.length + 1}">${spec.group}</th></tr>`;
-                    return;
-                }
-                
-                html += `<tr><th>${spec.label}</th>`;
-                
-                items.forEach(item => {
-                    const value = item[spec.key];
-                    const formattedValue = spec.format ? spec.format(value, item) : (value ?? '—');
-                    html += `<td>${formattedValue}</td>`;
-                });
-                
-                html += '</tr>';
-            });
-            
-            html += '</tbody></table>';
-            return html;
-        }
-        
-        // Close modal with Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeCompareModal();
-            }
-        });
-        
-        // Initialize comparison feature
-        setupCompareDropzone();
-        
-        // Make cards draggable after rendering
-        const originalRenderProducts = renderProducts;
-        renderProducts = function() {
-            originalRenderProducts();
-            makeCardsDraggable();
-        };
-        
-        // Compare button click handler
-        document.getElementById('compare-btn')?.addEventListener('click', openCompareModal);
-        
-        // ============ END COMPARISON FEATURE ============
-        
         }); // End of DOMContentLoaded
-    
     </script>
-    
-        <!-- Comparison Modal -->
-    <div class="compare-modal" id="compare-modal">
-        <div class="compare-modal-overlay" onclick="closeCompareModal()"></div>
-        <div class="compare-modal-content">
-            <div class="compare-modal-header">
-                <h2 id="compare-modal-title">Comparing Items</h2>
-                <button class="compare-modal-close" onclick="closeCompareModal()">×</button>
-            </div>
-            <div class="compare-modal-body" id="compare-modal-body"></div>
-        </div>
-    </div>
 </body>
 </html>

@@ -479,7 +479,7 @@
 
 .compare-table thead th {
     position: sticky;
-    top: 0;
+    top: 65px;
     background: white;
     z-index: 10;
     padding: 1.5rem 1rem;
@@ -496,6 +496,8 @@
     color: var(--text-secondary);
     width: 180px;
     min-width: 180px;
+    left: 0;
+    z-index: 11;
 }
 
 .compare-product-header {
@@ -574,6 +576,17 @@
     position: sticky;
     left: 0;
     background: white;
+}
+
+.compare-table thead th:first-child {
+    z-index: 11;
+}
+
+.compare-table tbody th:first-child {
+    z-index: 6;
+}
+
+.compare-table tbody td:first-child {
     z-index: 5;
 }
 
@@ -1675,14 +1688,14 @@
                         <div class="filter-title">Focal Length Range</div>
                         <div class="price-slider-container">
                             <div class="price-values">
-                                <span id="focal-min-value">3mm</span>
-                                <span id="focal-max-value">1200mm</span>
+                                <span id="focal-min-value">14mm</span>
+                                <span id="focal-max-value">600mm</span>
                             </div>
                             <div class="price-slider">
                                 <div class="price-track"></div>
                                 <div class="price-range" id="focal-range"></div>
-                                <input type="range" id="focal-min" min="3" max="1200" value="3" step="1">
-                                <input type="range" id="focal-max" min="3" max="1200" value="1200" step="1">
+                                <input type="range" id="focal-min" min="14" max="600" value="14" step="1">
+                                <input type="range" id="focal-max" min="14" max="600" value="600" step="1">
                             </div>
                         </div>
                     </div>
@@ -3466,8 +3479,8 @@
             }
             
             // Check max limit
-            if (compareCart.length >= 6) {
-                alert('You can compare up to 6 items at once');
+            if (compareCart.length >= 4) {
+                alert('You can compare up to 4 items at once');
                 return;
             }
             

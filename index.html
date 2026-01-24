@@ -1688,14 +1688,14 @@
                         <div class="filter-title">Focal Length Range</div>
                         <div class="price-slider-container">
                             <div class="price-values">
-                                <span id="focal-min-value">14mm</span>
-                                <span id="focal-max-value">600mm</span>
+                                <span id="focal-min-value">3mm</span>
+                                <span id="focal-max-value">1200mm</span>
                             </div>
                             <div class="price-slider">
                                 <div class="price-track"></div>
                                 <div class="price-range" id="focal-range"></div>
-                                <input type="range" id="focal-min" min="14" max="600" value="14" step="1">
-                                <input type="range" id="focal-max" min="14" max="600" value="600" step="1">
+                                <input type="range" id="focal-min" min="3" max="1200" value="3" step="1">
+                                <input type="range" id="focal-max" min="3" max="1200" value="1200" step="1">
                             </div>
                         </div>
                     </div>
@@ -1742,8 +1742,8 @@
                 ibis: new Set(),
                 priceMin: 0,
                 priceMax: 10000,
-                focalMin: 14,
-                focalMax: 600,
+                focalMin: 3,
+                focalMax: 1200,
                 sortBy: 'release-desc' // Default: newest first
             };
 
@@ -3479,8 +3479,8 @@
             }
             
             // Check max limit
-            if (compareCart.length >= 4) {
-                alert('You can compare up to 4 items at once');
+            if (compareCart.length >= 6) {
+                alert('You can compare up to 6 items at once');
                 return;
             }
             
@@ -3543,15 +3543,19 @@
             const table = buildComparisonTable(compareCart);
             document.getElementById('compare-modal-body').innerHTML = table;
             
-            const itemType = compareCart[0].type === 'body' ? 'Camera Bodies' : 'Lenses';
-            document.getElementById('compare-modal-title').textContent = `Comparing ${compareCart.length} ${itemType}`;
+            // Clear the title text (leave empty)
+            document.getElementById('compare-modal-title').textContent = '';
             
             document.getElementById('compare-modal').classList.add('show');
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = 'hidden';
         }
         
         // Close comparison modal
         window.closeCompareModal = function() {
             document.getElementById('compare-modal').classList.remove('show');
+            // Restore body scroll
+            document.body.style.overflow = '';
         };
         
         // Build comparison table

@@ -154,6 +154,7 @@
             height: 100vh;
             overflow-y: auto;
             z-index: 100;
+            overscroll-behavior: contain; /* Prevent scroll chaining to main content */
         }
         
         .sidebar::-webkit-scrollbar {
@@ -1118,8 +1119,8 @@
         
         /* Lens Image Bounding Box - Ensures consistent max size across all lenses */
         .product-card[data-type="lens"] .product-image {
-            max-width:  400px;  /* Adjust this to control maximum width */
-            max-height: 325px; /* Adjust this to control maximum height */
+            max-width: 220px;  /* Adjust this to control maximum width */
+            max-height: 220px; /* Adjust this to control maximum height */
         }
         
         /* Lens Image Scaling - All brands except Fuji */
@@ -1845,6 +1846,24 @@
                 sortBy: 'release-desc' // Default: newest first
             };
 
+            // Prevent sidebar scroll from affecting main content
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                sidebar.addEventListener('wheel', function(e) {
+                    const scrollTop = sidebar.scrollTop;
+                    const scrollHeight = sidebar.scrollHeight;
+                    const height = sidebar.clientHeight;
+                    const delta = e.deltaY;
+                    const isAtTop = scrollTop === 0;
+                    const isAtBottom = scrollTop + height >= scrollHeight;
+
+                    // Prevent scroll chaining when at boundaries
+                    if ((isAtTop && delta < 0) || (isAtBottom && delta > 0)) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+            }
+
             // PASSWORD PROTECTION
             const CORRECT_PASSWORD = 'testml';
             const PASSWORD_KEY = 'monogrid_auth';
@@ -2316,7 +2335,7 @@
             // Search
             document.getElementById('search-input').addEventListener('input', (e) => {
                 filters.search = e.target.value.toLowerCase();
-                renderProducts();
+                debounceRender(250); // Use longer delay for search (250ms) to reduce renders while typing
             });
 
             // Checkbox filters (including IBIS, weather, IS)
@@ -2839,7 +2858,7 @@
                 filters.priceMax = maxVal;
 
                 updatePriceDisplay();
-                renderProducts();
+                debounceRender(); // Use debounced render for smooth slider interaction
             }
 
             priceMinSlider.addEventListener('input', updateSlider);
@@ -2929,7 +2948,7 @@
                 filters.focalMax = maxVal;
 
                 updateFocalDisplay();
-                renderProducts();
+                debounceRender(); // Use debounced render for smooth slider interaction
             }
 
             focalMinSlider.addEventListener('input', updateSlider);
@@ -2975,6 +2994,15 @@
                 isPageScrolling = false;
             }, 100);
         }, { passive: true });
+
+        // Debounce function to prevent excessive re-renders during filter adjustments
+        let renderTimeout;
+        function debounceRender(delay = 150) {
+            clearTimeout(renderTimeout);
+            renderTimeout = setTimeout(() => {
+                renderProducts();
+            }, delay);
+        }
 
         function renderProducts() {
             const grid = document.getElementById('products-grid');

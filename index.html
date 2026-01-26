@@ -497,24 +497,26 @@
     background: white;
     max-width: 90vw;
     max-height: 85vh;
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
     border-radius: 8px;
     z-index: 1001;
+    overflow: hidden;
 }
 
 .compare-modal-header {
-    position: relative;
+    position: sticky;
+    top: 0;
     background: white;
     padding: 0;
     display: flex;
     justify-content: flex-end;
     z-index: 1002;
+    flex-shrink: 0;
 }
 
 .compare-modal-close {
-    position: sticky;
-    top: 0;
-    right: 0;
+    position: relative;
     width: 32px;
     height: 32px;
     background: white;
@@ -538,7 +540,9 @@
 }
 
 .compare-modal-body {
-    padding: 1.5rem;
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    overflow-y: auto;
+    overflow-x: auto;
 }
 
 .compare-table {
